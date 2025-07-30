@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+{% block dc_title %}Inicio{% endblock %}
+{% block dc_description %}Página de inicio de Metadatos App, mostrando los archivos disponibles.{% endblock %}
+
+{% block content %}
+    <h2>Archivos Disponibles</h2>
+    {% if files %}
+        <div class="file-list">
+            {% for file in files %}
+                <div class="file-item">
+                    <h3>{{ file.title }}</h3>
+                    <p>{{ file.description }}</p>
+                    <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}" target="_blank">Ver Archivo</a>
+                    <span class="upload-date">Subido el: {{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</span>
+                    <div style="display:none;">
+                        <meta name="DC.identifier" content="{{ file.id }}">
+                        <meta name="DC.title" content="{{ file.title }}">
+                        <meta name="DC.description" content="{{ file.description }}">
+                        <meta name="DC.date" content="{{ file.upload_date.strftime('%Y-%m-%d') }}">
+                        <meta name="DC.type" content="Archivo Digital">
+                        <meta name="DC.format" content="{{ file.filename.split('.')[-1] }}">
+                        <meta name="DC.source" content="{{ url_for('static', filename='../uploads/' + file.filename, _external=True) }}">
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay archivos subidos todavía.</p>
+    {% endif %}
+{% endblock %}

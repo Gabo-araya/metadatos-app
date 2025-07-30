@@ -1,0 +1,29 @@
+# Archivos de entorno virtual
+venv/
+env/
+.env
+
+# Otros
+bkup/
+
+# Archivos de base de datos SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos de Pyc
+__pycache__/
+*.pyc
+*.pyd
+
+# Archivos de subida (uploads)
+uploads/
+
+# Archivos específicos de macOS
+.DS_Store
+
+# Archivos específicos de IDEs (ej. VS Code)
+.vscode/
+
+# Logs
+*.log

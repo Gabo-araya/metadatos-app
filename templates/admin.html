@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración{% endblock %}
+{% block dc_title %}Panel de Administración{% endblock %}
+{% block dc_description %}Panel para subir y gestionar archivos en Metadatos App.{% endblock %}
+
+{% block content %}
+    <h2>Panel de Administración</h2>
+
+    <h3>Subir Nuevo Archivo</h3>
+    <form method="POST" enctype="multipart/form-data" class="upload-form">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="description">Descripción:</label>
+        <textarea id="description" name="description" rows="4" required></textarea><br>
+
+        <label for="file">Seleccionar Archivo:</label>
+        <input type="file" id="file" name="file" required><br>
+
+        <button type="submit">Subir Archivo</button>
+    </form>
+
+    <hr>
+
+    <h3>Archivos Existentes</h3>
+    {% if files %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Nombre de Archivo</th>
+                    <th>Fecha de Subida</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>{{ file.title }}</td>
+                        <td>{{ file.description }}</td>
+                        <td><a href="{{ url_for('static', filename='../uploads/' + file.filename) }}" target="_blank">{{ file.filename }}</a></td>
+                        <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_file', file_id=file.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar este archivo?')" class="btn-delete">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay archivos subidos en la base de datos.</p>
+    {% endif %}
+{% endblock %}
