@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Página no encontrada - Error 404{% endblock %}
+{% block dc_title %}Error 404 - Página no encontrada{% endblock %}
+{% block dc_description %}La página solicitada no pudo ser encontrada en el servidor.{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="error-page">
+                <!-- Error Icon -->
+                <div class="error-icon mb-4">
+                    <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 8rem;"></i>
+                </div>
+
+                <!-- Error Code -->
+                <h1 class="display-1 fw-bold text-primary mb-3">404</h1>
+
+                <!-- Error Message -->
+                <h2 class="h3 mb-3">¡Oops! Página no encontrada</h2>
+                <p class="lead text-muted mb-4">
+                    Lo sentimos, la página que estás buscando no existe o ha sido movida.
+                </p>
+
+                <!-- Helpful Actions -->
+                <div class="error-actions">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="bi bi-house-fill me-2"></i>Ir al Inicio
+                    </a>
+                    <button onclick="history.back()" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left me-2"></i>Volver Atrás
+                    </button>
+                </div>
+
+                <!-- Additional Help -->
+                <div class="mt-5 pt-4 border-top">
+                    <h5 class="mb-3">¿Qué puedes hacer?</h5>
+                    <div class="row text-start">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    Verificar la URL en la barra de direcciones
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    Usar el buscador en la página principal
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    Revisar los enlaces de navegación
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    Contactar al administrador si persiste
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="mt-4">
+                    <h6 class="text-muted mb-3">Enlaces útiles:</h6>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-collection me-1"></i>Ver Archivos
+                        </a>
+                        <a href="{{ url_for('help_page') }}" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-question-circle me-1"></i>Ayuda
+                        </a>
+                        {% if not session.logged_in %}
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Admin
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.error-icon i {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %}

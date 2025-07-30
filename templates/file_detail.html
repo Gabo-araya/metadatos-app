@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}{{ file.title }} - Metadatos App{% endblock %}
+{% block dc_title %}{{ file.title }}{% endblock %}
+{% block dc_description %}{{ file.description }}{% endblock %}
+{% block dc_subject %}{{ file.dc_subject if file.dc_subject else 'archivo digital, recurso' }}{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page" class="text-truncate" style="max-width: 300px;">
+            <i class="bi bi-file-earmark me-1"></i>{{ file.title }}
+        </li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- File Header -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h1 class="card-title h3 mb-0">
+                                <i class="bi {{ get_file_icon(file.filename) }} me-2"></i>
+                                {{ file.title }}
+                            </h1>
+                        </div>
+                        <div class="col-auto">
+                            {% if file_exists %}
+                                <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}"
+                                   target="_blank"
+                                   class="btn btn-light btn-sm">
+                                    <i class="bi bi-download me-1"></i>Descargar
+                                </a>
+                            {% else %}
+                                <span class="badge bg-warning">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Archivo no disponible
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text lead">{{ file.description }}</p>
+
+                    <!-- File Actions -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        {% if file_exists %}
+                            <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}"
+                               target="_blank"
+                               class="btn btn-primary">
+                                <i class="bi bi-eye me-1"></i>Ver Archivo
+                            </a>
+                            <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}"
+                               download
+                               class="btn btn-success">
+                                <i class="bi bi-download me-1"></i>Descargar
+                            </a>
+                        {% endif %}
+
+                        {% if session.logged_in %}
+                            <a href="{{ url_for('admin_panel') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-gear me-1"></i>Ir a Admin
+                            </a>
+                        {% endif %}
+
+                        <button type="button" class="btn btn-outline-info" onclick="copyLink()">
+                            <i class="bi bi-link-45deg me-1"></i>Copiar Enlace
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Preview (for images) -->
+            {% if file.is_image and file_exists %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-image me-2"></i>Vista Previa
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='../uploads/' + file.filename) }}"
+                         alt="{{ file.title }}"
+                         class="img-fluid rounded shadow-sm"
+                         style="max-height: 500px; object-fit: contain;">
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Dublin Core Metadata Display -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-tags-fill me-2"></i>Metadatos Dublin Core
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold" width="200">
+                                        <i class="bi bi-hash me-1 text-muted"></i>Identificador
+                                    </td>
+                                    <td><code>{{ file.id }}</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-type me-1 text-muted"></i>Título (DC.title)
+                                    </td>
+                                    <td>{{ file.title }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-card-text me-1 text-muted"></i>Descripción (DC.description)
+                                    </td>
+                                    <td>{{ file.description }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-person me-1 text-muted"></i>Creador (DC.creator)
+                                    </td>
+                                    <td>{{ file.dc_creator }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-calendar3 me-1 text-muted"></i>Fecha (DC.date)
+                                    </td>
+                                    <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-file-earmark me-1 text-muted"></i>Tipo (DC.type)
+                                    </td>
+                                    <td>Archivo Digital</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-filetype-txt me-1 text-muted"></i>Formato (DC.format)
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">{{ file.file_extension.upper() }}</span>
+                                        <small class="text-muted ms-2">{{ file.formatted_size }}</small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-translate me-1 text-muted"></i>Idioma (DC.language)
+                                    </td>
+                                    <td>{{ file.dc_language }}</td>
+                                </tr>
+                                {% if file.dc_subject %}
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-tags me-1 text-muted"></i>Palabras Clave (DC.subject)
+                                    </td>
+                                    <td>
+                                        {% for keyword in file.dc_subject.split(',') %}
+                                            <span class="badge bg-secondary me-1">{{ keyword.strip() }}</span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-shield-check me-1 text-muted"></i>Derechos (DC.rights)
+                                    </td>
+                                    <td><small>{{ file.dc_rights }}</small></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="bi bi-link-45deg me-1 text-muted"></i>Fuente (DC.source)
+                                    </td>
+                                    <td>
+                                        {% if file_exists %}
+                                            <a href="{{ url_for('static', filename='../uploads/' + file.filename, _external=True) }}"
+                                               class="text-decoration-none" target="_blank">
+                                                <code class="small">{{ url_for('static', filename='../uploads/' + file.filename, _external=True) }}</code>
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted">Archivo no disponible</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Information -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-info-circle-fill me-2"></i>Información Técnica
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">Detalles del Archivo</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="bi bi-file-text me-2 text-muted"></i>
+                                    <strong>Nombre:</strong> {{ file.filename }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-hdd me-2 text-muted"></i>
+                                    <strong>Tamaño:</strong> {{ file.formatted_size }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-filetype-{{ file.file_extension }} me-2 text-muted"></i>
+                                    <strong>Extensión:</strong> .{{ file.file_extension }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle me-2 text-success"></i>
+                                    <strong>Estado:</strong>
+                                    {% if file_exists %}
+                                        <span class="text-success">Disponible</span>
+                                    {% else %}
+                                        <span class="text-danger">No disponible</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-info mb-3">Clasificación</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="bi bi-{{ 'image' if file.is_image else 'file-text' if file.is_document else 'music-note' if file.is_media else 'file' }} me-2 text-muted"></i>
+                                    <strong>Tipo:</strong>
+                                    {% if file.is_image %}
+                                        <span class="badge bg-info">Imagen</span>
+                                    {% elif file.is_document %}
+                                        <span class="badge bg-primary">Documento</span>
+                                    {% elif file.is_media %}
+                                        <span class="badge bg-success">Multimedia</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Otro</span>
+                                    {% endif %}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-calendar-plus me-2 text-muted"></i>
+                                    <strong>Subido:</strong> {{ file.upload_date.strftime('%d de %B de %Y') }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-clock me-2 text-muted"></i>
+                                    <strong>Hora:</strong> {{ file.upload_date.strftime('%H:%M:%S') }}
+                                </li>
+                                {% if file.updated_at != file.created_at %}
+                                <li class="mb-2">
+                                    <i class="bi bi-arrow-clockwise me-2 text-muted"></i>
+                                    <strong>Actualizado:</strong> {{ file.updated_at.strftime('%d/%m/%Y %H:%M') }}
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 100px;">
+                <!-- Quick Actions -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-lightning-fill me-2"></i>Acciones Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            {% if file_exists %}
+                                <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}"
+                                   target="_blank"
+                                   class="btn btn-primary">
+                                    <i class="bi bi-eye-fill me-1"></i>Abrir Archivo
+                                </a>
+                                <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}"
+                                   download
+                                   class="btn btn-success">
+                                    <i class="bi bi-download me-1"></i>Descargar
+                                </a>
+                            {% endif %}
+
+                            <button type="button" class="btn btn-outline-info" onclick="copyLink()">
+                                <i class="bi bi-link-45deg me-1"></i>Copiar Enlace
+                            </button>
+
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Volver a la Lista
+                            </a>
+
+                            {% if session.logged_in %}
+                                <hr>
+                                <button type="button"
+                                        class="btn btn-outline-danger"
+                                        onclick="confirmDelete()">
+                                    <i class="bi bi-trash me-1"></i>Eliminar Archivo
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Statistics -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-bar-chart-fill me-2"></i>Estadísticas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <h4 class="text-primary mb-1">{{ file.id }}</h4>
+                                    <small class="text-muted">ID Archivo</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h4 class="text-success mb-1">{{ file.file_size }}MB</h4>
+                                <small class="text-muted">Tamaño</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                Días desde subida:
+                                <strong>{{ (moment() - file.upload_date).days if moment else 'N/A' }}</strong>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Similar Files -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-files me-2"></i>Archivos Similares
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">
+                            Otros archivos del mismo tipo:
+                        </p>
+                        <!-- This would require additional logic in the backend -->
+                        <div class="text-center">
+                            <a href="{{ url_for('index', search=file.file_extension) }}"
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-search me-1"></i>Ver archivos .{{ file.file_extension }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    {% if session.logged_in %}
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">¿Estás seguro de que deseas eliminar este archivo?</p>
+                    <div class="bg-light p-3 rounded">
+                        <strong>{{ file.title }}</strong><br>
+                        <small class="text-muted">{{ file.filename }}</small>
+                    </div>
+                    <div class="alert alert-warning mt-3 mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Esta acción no se puede deshacer.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form action="{{ url_for('delete_file', file_id=file.id) }}" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash-fill me-1"></i>Eliminar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Dublin Core Metadata (Hidden for SEO) -->
+    <div style="display:none;">
+        <meta name="DC.identifier" content="{{ file.id }}">
+        <meta name="DC.title" content="{{ file.title }}">
+        <meta name="DC.description" content="{{ file.description }}">
+        <meta name="DC.creator" content="{{ file.dc_creator }}">
+        <meta name="DC.date" content="{{ file.upload_date.strftime('%Y-%m-%d') }}">
+        <meta name="DC.type" content="Archivo Digital">
+        <meta name="DC.format" content="{{ file.file_extension }}">
+        <meta name="DC.language" content="{{ file.dc_language }}">
+        {% if file.dc_subject %}
+        <meta name="DC.subject" content="{{ file.dc_subject }}">
+        {% endif %}
+        <meta name="DC.rights" content="{{ file.dc_rights }}">
+        {% if file_exists %}
+        <meta name="DC.source" content="{{ url_for('static', filename='../uploads/' + file.filename, _external=True) }}">
+        {% endif %}
+        <meta name="DC.extent" content="{{ file.formatted_size }}">
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(function() {
+        // Show success message
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2 me-1"></i>¡Copiado!';
+        btn.classList.remove('btn-outline-info');
+        btn.classList.add('btn-success');
+
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-info');
+        }, 2000);
+    }).catch(function(err) {
+        alert('Error al copiar el enlace: ' + err);
+    });
+}
+
+{% if session.logged_in %}
+function confirmDelete() {
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+{% endif %}
+
+// Image lazy loading and error handling
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.addEventListener('error', function() {
+            this.style.display = 'none';
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'alert alert-warning text-center';
+            errorMsg.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>No se pudo cargar la imagen';
+            this.parentNode.appendChild(errorMsg);
+        });
+    });
+});
+</script>
+{% endblock %}

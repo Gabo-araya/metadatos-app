@@ -1,43 +1,297 @@
 {% extends "base.html" %}
 
-{% block title %}Inicio{% endblock %}
+{% block title %}Inicio - Metadatos App{% endblock %}
 {% block dc_title %}Inicio{% endblock %}
-{% block dc_description %}Página de inicio de Metadatos App, mostrando los archivos disponibles.{% endblock %}
+{% block dc_description %}Página principal de Metadatos App, mostrando la colección completa de archivos digitales disponibles con sus metadatos correspondientes.{% endblock %}
+{% block dc_subject %}archivos digitales, colección, recursos disponibles, metadatos{% endblock %}
+
+{% block meta_description %}Explora la colección completa de archivos digitales en Metadatos App. Encuentra documentos, imágenes y recursos organizados con metadatos Dublin Core.{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="bi bi-house-fill me-1"></i>Inicio
+        </li>
+    </ol>
+</nav>
+{% endblock %}
 
 {% block content %}
-    <h2 class="mb-4">Archivos Disponibles</h2>
-    {% if files %}
-        <div class="row"> {# Usamos la fila de Bootstrap para el grid #}
-            {% for file in files %}
-                <div class="col-md-6 col-lg-4 mb-4"> {# Columnas responsivas #}
-                    <div class="card h-100 shadow-sm"> {# Tarjetas de Bootstrap #}
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold text-primary mb-3">
+                <i class="bi bi-collection-fill me-3"></i>Archivos Disponibles
+            </h1>
+            <p class="lead text-muted">
+                Explora nuestra colección de recursos digitales organizados con metadatos Dublin Core.
+            </p>
+        </div>
+
+        <div class="col-lg-4">
+
+            <!--div class="text-lg-end mb-2">
+                <div class="bg-light p-3 rounded">
+                    <small class="text-muted d-block">Sesión iniciada como:</small>
+                    <strong class="text-primary">
+                        <i class="bi bi-person-check-fill me-1"></i>{{ session.username }}
+                    </strong>
+                </div>
+            </div-->
+
+            <!-- Quick Stats (if logged in) -->
+            {% if session.logged_in and files and files.items %}
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card bg-light border-0">
                         <div class="card-body">
-                            <h5 class="card-title d-flex align-items-center">
-                                <i class="bi {{ get_file_icon(file.filename) }} me-2 fs-4"></i> {# Aquí usamos la función y el ícono #}
+                            <h6 class="card-title text-muted mb-3">
+                                <i class="bi bi-graph-up me-1"></i>Estadísticas Rápidas
+                            </h6>
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <div class="fw-bold text-primary fs-4">{{ files.total }}</div>
+                                    <small class="text-muted">Total Archivos</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="fw-bold text-success fs-4">{{ files.pages }}</div>
+                                    <small class="text-muted">Páginas</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="fw-bold text-warning fs-4">{{ files.items|length }}</div>
+                                    <small class="text-muted">En Esta Página</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row mb-4">
+        <!-- Search Form -->
+        <form method="GET" class="d-flex" role="search">
+            <input
+                class="form-control me-2"
+                type="search"
+                name="search"
+                placeholder="Buscar archivos..."
+                aria-label="Buscar archivos"
+                value="{{ search if search }}"
+                autocomplete="off"
+            >
+            <button class="btn btn-outline-primary" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+            {% if search %}
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary ms-1" title="Limpiar búsqueda">
+                <i class="bi bi-x-lg"></i>
+            </a>
+            {% endif %}
+        </form>
+
+    </div>
+
+    {% if search %}
+    <div class="alert alert-info" role="alert">
+        <i class="bi bi-search me-2"></i>
+        Mostrando resultados para: <strong>"{{ search }}"</strong>
+        {% if files and files.items %}
+            - {{ files.total }} archivo(s) encontrado(s)
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Files Grid -->
+    {% if files and files.items %}
+        <div class="row g-4">
+            {% for file in files.items %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0 file-card">
+                        <!-- File Icon Header -->
+                        <div class="card-header bg-light border-0 text-center py-3">
+                            <i class="bi {{ get_file_icon(file.filename) }} display-6"></i>
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-truncate" title="{{ file.title }}">
                                 {{ file.title }}
                             </h5>
-                            <p class="card-text text-muted">{{ file.description }}</p>
-                            <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}" target="_blank" class="btn btn-primary btn-sm">
-                                <i class="bi bi-download me-1"></i> Ver/Descargar
-                            </a>
-                            <small class="text-muted d-block mt-2">Subido el: {{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</small>
-                            <div style="display:none;">
-                                <meta name="DC.identifier" content="{{ file.id }}">
-                                <meta name="DC.title" content="{{ file.title }}">
-                                <meta name="DC.description" content="{{ file.description }}">
-                                <meta name="DC.date" content="{{ file.upload_date.strftime('%Y-%m-%d') }}">
-                                <meta name="DC.type" content="Archivo Digital">
-                                <meta name="DC.format" content="{{ file.filename.split('.')[-1] }}">
-                                <meta name="DC.source" content="{{ url_for('static', filename='../uploads/' + file.filename, _external=True) }}">
+
+                            <p class="card-text text-muted flex-grow-1">
+                                {{ file.short_description }}
+                            </p>
+
+                            <!-- File Meta Information -->
+                            <div class="file-meta mb-3">
+                                <small class="text-muted d-block">
+                                    <i class="bi bi-file-earmark me-1"></i>
+                                    {{ file.filename }}
+                                </small>
+                                <small class="text-muted d-block">
+                                    <i class="bi bi-hdd me-1"></i>
+                                    {{ file.formatted_size }}
+                                </small>
+                                <small class="text-muted d-block">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    {{ file.upload_date.strftime('%d/%m/%Y %H:%M') }}
+                                </small>
                             </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}"
+                                   target="_blank"
+                                   class="btn btn-primary btn-sm">
+                                    <i class="bi bi-download me-1"></i>Ver/Descargar
+                                </a>
+                                <a href="{{ url_for('view_file', file_id=file.id) }}"
+                                   class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-info-circle me-1"></i>Ver Detalles
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Dublin Core Metadata (Hidden for SEO) -->
+                        <div style="display:none;">
+                            <meta name="DC.identifier" content="{{ file.id }}">
+                            <meta name="DC.title" content="{{ file.title }}">
+                            <meta name="DC.description" content="{{ file.description }}">
+                            <meta name="DC.date" content="{{ file.upload_date.strftime('%Y-%m-%d') }}">
+                            <meta name="DC.type" content="Archivo Digital">
+                            <meta name="DC.format" content="{{ file.file_extension }}">
+                            <meta name="DC.source" content="{{ url_for('static', filename='../uploads/' + file.filename, _external=True) }}">
+                            <meta name="DC.extent" content="{{ file.formatted_size }}">
+                            {% if file.dc_subject %}
+                            <meta name="DC.subject" content="{{ file.dc_subject }}">
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if files.pages > 1 %}
+        <nav aria-label="Paginación de archivos" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Page -->
+                {% if files.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('index', page=files.prev_num, search=search if search) }}" aria-label="Página anterior">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                {% endif %}
+
+                <!-- Page Numbers -->
+                {% for page_num in files.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num != files.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('index', page=page_num, search=search if search) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next Page -->
+                {% if files.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('index', page=files.next_num, search=search if search) }}" aria-label="Página siguiente">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <!-- Results Info -->
+        <div class="text-center text-muted mt-3">
+            <small>
+                Mostrando {{ files.per_page * (files.page - 1) + 1 }} -
+                {{ files.per_page * (files.page - 1) + files.items|length }}
+                de {{ files.total }} archivo(s)
+            </small>
+        </div>
+        {% endif %}
+
     {% else %}
-        <div class="alert alert-info" role="alert">
-            No hay archivos subidos todavía.
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+            </div>
+            {% if search %}
+                <h3 class="text-muted">No se encontraron archivos</h3>
+                <p class="text-muted mb-4">
+                    No hay archivos que coincidan con tu búsqueda "<strong>{{ search }}</strong>".
+                </p>
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <i class="bi bi-arrow-left me-1"></i>Ver todos los archivos
+                </a>
+            {% else %}
+                <h3 class="text-muted">No hay archivos disponibles</h3>
+                <p class="text-muted mb-4">
+                    Aún no se han subido archivos a la plataforma.
+                </p>
+                {% if session.logged_in %}
+                    <a href="{{ url_for('admin_panel') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i>Subir primer archivo
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('help_page') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-question-circle me-1"></i>Más información
+                    </a>
+                {% endif %}
+            {% endif %}
         </div>
     {% endif %}
+
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// File card hover effects
+document.addEventListener('DOMContentLoaded', function() {
+    const fileCards = document.querySelectorAll('.file-card');
+
+    fileCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.transition = 'transform 0.3s ease';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Auto-focus search input if there's a search parameter
+    const searchInput = document.querySelector('input[name="search"]');
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('search') && searchInput) {
+        searchInput.focus();
+    }
+});
+</script>
 {% endblock %}

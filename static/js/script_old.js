@@ -253,22 +253,21 @@ const Navigation = {
 
   initSmoothScrolling: () => {
     document.addEventListener("click", (e) => {
-      // Buscar el enlace más cercano
-      const link = e.target.closest('a[href^="#"]');
-      if (!link) return;
+      if (
+        e.target.matches('a[href^="#"]') ||
+        e.target.closest('a[href^="#"]')
+      ) {
+        const link = e.target.matches("a") ? e.target : e.target.closest("a");
+        const href = link.getAttribute("href");
 
-      const href = link.getAttribute("href");
+        if (href === "#") return;
 
-      // Validar que el href existe y no es solo '#'
-      if (!href || href === "#" || href.length <= 1) return;
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          Utils.smoothScrollTo(target);
 
-      const target = document.querySelector(href);
-      if (target) {
-        e.preventDefault();
-        Utils.smoothScrollTo(target);
-
-        // Update URL without jumping
-        if (history.pushState) {
+          // Update URL without jumping
           history.pushState(null, null, href);
         }
       }
@@ -280,35 +279,9 @@ const Navigation = {
     const currentPath = window.location.pathname;
 
     navLinks.forEach((link) => {
-      try {
-        // Verificar que el href existe y es válido
-        if (!link.href || link.href === "" || link.href === "#") {
-          return;
-        }
-
-        // Verificar si es una URL relativa o absoluta
-        let linkPath;
-        if (
-          link.href.startsWith("http://") ||
-          link.href.startsWith("https://")
-        ) {
-          // URL absoluta
-          linkPath = new URL(link.href).pathname;
-        } else {
-          // URL relativa - usar directamente el href
-          linkPath = link.getAttribute("href");
-        }
-
-        if (linkPath === currentPath) {
-          link.classList.add("active");
-        }
-      } catch (error) {
-        // Si hay error con la URL, intentar comparación directa
-        console.warn("Error procesando URL de navegación:", link.href, error);
-        const href = link.getAttribute("href");
-        if (href && href === currentPath) {
-          link.classList.add("active");
-        }
+      const linkPath = new URL(link.href).pathname;
+      if (linkPath === currentPath) {
+        link.classList.add("active");
       }
     });
   },
@@ -1146,31 +1119,14 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("🚀 Metadatos App iniciando...");
 
   try {
-    // Verificar que estamos en un entorno de navegador válido
-    if (typeof window === "undefined" || typeof document === "undefined") {
-      throw new Error("Entorno de navegador no disponible");
-    }
-
-    // Inicializar todos los módulos con manejo individual de errores
-    const modules = [
-      { name: "Navigation", init: Navigation.init },
-      { name: "Forms", init: Forms.init },
-      { name: "Cards", init: Cards.init },
-      { name: "Alerts", init: Alerts.init },
-      { name: "PageSpecific", init: PageSpecific.init },
-      { name: "Accessibility", init: Accessibility.init },
-      { name: "Performance", init: Performance.init },
-    ];
-
-    modules.forEach((module) => {
-      try {
-        module.init();
-        console.log(`✅ ${module.name} inicializado correctamente`);
-      } catch (error) {
-        console.warn(`⚠️ Error al inicializar ${module.name}:`, error);
-        // Continuar con los otros módulos
-      }
-    });
+    // Inicializar todos los módulos
+    Navigation.init();
+    Forms.init();
+    Cards.init();
+    Alerts.init();
+    PageSpecific.init();
+    Accessibility.init();
+    Performance.init();
 
     console.log("✅ Metadatos App iniciado correctamente");
 
@@ -1179,91 +1135,27 @@ document.addEventListener("DOMContentLoaded", () => {
       window.announceToScreenReader("Aplicación cargada correctamente");
     }
   } catch (error) {
-    console.error("❌ Error crítico al inicializar Metadatos App:", error);
+    console.error("❌ Error al inicializar Metadatos App:", error);
 
-    // Fallback mínimo para funcionalidad básica
-    try {
-      // Al menos intentar inicializar funcionalidades críticas
-      if (typeof Utils !== "undefined" && Utils.showToast) {
-        Utils.showToast(
-          "Error al cargar algunas funcionalidades. La aplicación puede no funcionar correctamente.",
-          "danger",
-          5000,
-        );
-      } else {
-        // Fallback de fallback
-        const alertDiv = document.createElement("div");
-        alertDiv.className =
-          "alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3";
-        alertDiv.style.zIndex = "9999";
-        alertDiv.innerHTML = `
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    Error al cargar la aplicación. Algunas funcionalidades pueden no estar disponibles.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-        document.body.appendChild(alertDiv);
-
-        // Auto-remove after 10 seconds
-        setTimeout(() => {
-          if (alertDiv.parentNode) {
-            alertDiv.remove();
-          }
-        }, 10000);
-      }
-    } catch (fallbackError) {
-      console.error("❌ Error en fallback:", fallbackError);
-    }
+    // Fallback mínimo
+    Utils.showToast(
+      "Error al cargar algunas funcionalidades. La aplicación puede no funcionar correctamente.",
+      "danger",
+      5000,
+    );
   }
 });
 
 // ===== MANEJO DE ERRORES GLOBALES =====
 window.addEventListener("error", (e) => {
   console.error("Error JavaScript:", e.error);
-  console.error("Archivo:", e.filename);
-  console.error("Línea:", e.lineno);
-  console.error("Columna:", e.colno);
-
-  // Solo mostrar toast si Utils está disponible
-  if (typeof Utils !== "undefined" && Utils.showToast) {
-    Utils.showToast("Se produjo un error inesperado", "danger");
-  }
+  Utils.showToast("Se produjo un error inesperado", "danger");
 });
 
 window.addEventListener("unhandledrejection", (e) => {
   console.error("Promise rechazada:", e.reason);
-
-  // Solo mostrar toast si Utils está disponible
-  if (typeof Utils !== "undefined" && Utils.showToast) {
-    Utils.showToast("Error al procesar la solicitud", "danger");
-  }
+  Utils.showToast("Error al procesar la solicitud", "danger");
 });
-
-// ===== FUNCIÓN DE DEBUG =====
-window.debugMetadatosApp = function () {
-  console.log("=== DEBUG METADATOS APP ===");
-  console.log("URL actual:", window.location.href);
-  console.log("Pathname:", window.location.pathname);
-  console.log("Enlaces de navegación encontrados:");
-
-  const navLinks = document.querySelectorAll(".nav-link");
-  navLinks.forEach((link, index) => {
-    console.log(
-      `  ${index + 1}. href="${link.href}" getAttribute("href")="${link.getAttribute("href")}"`,
-    );
-  });
-
-  console.log("Estado de módulos:");
-  console.log("  Navigation:", typeof Navigation !== "undefined" ? "✅" : "❌");
-  console.log("  Forms:", typeof Forms !== "undefined" ? "✅" : "❌");
-  console.log("  Cards:", typeof Cards !== "undefined" ? "✅" : "❌");
-  console.log("  Utils:", typeof Utils !== "undefined" ? "✅" : "❌");
-
-  console.log(
-    "Bootstrap disponible:",
-    typeof bootstrap !== "undefined" ? "✅" : "❌",
-  );
-  console.log("=== FIN DEBUG ===");
-};
 
 // ===== EXPORTAR PARA USO GLOBAL =====
 window.MetadatosApp = MetadatosApp;

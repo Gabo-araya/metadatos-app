@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Error interno del servidor - Error 500{% endblock %}
+{% block dc_title %}Error 500 - Error interno del servidor{% endblock %}
+{% block dc_description %}Se ha producido un error interno en el servidor.{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="error-page">
+                <!-- Error Icon -->
+                <div class="error-icon mb-4">
+                    <i class="bi bi-exclamation-octagon-fill text-danger" style="font-size: 8rem;"></i>
+                </div>
+
+                <!-- Error Code -->
+                <h1 class="display-1 fw-bold text-danger mb-3">500</h1>
+
+                <!-- Error Message -->
+                <h2 class="h3 mb-3">Error Interno del Servidor</h2>
+                <p class="lead text-muted mb-4">
+                    Lo sentimos, algo salió mal en nuestros servidores. El error ha sido registrado y será revisado.
+                </p>
+
+                <!-- Error Details (only in debug mode) -->
+                {% if config.DEBUG %}
+                <div class="alert alert-warning text-start mb-4">
+                    <h6><i class="bi bi-bug me-2"></i>Información de Debug:</h6>
+                    <small class="text-monospace">
+                        Timestamp: {{ moment().strftime('%Y-%m-%d %H:%M:%S') if moment else 'N/A' }}<br>
+                        User Agent: {{ request.headers.get('User-Agent', 'Unknown')[:100] }}...<br>
+                        IP: {{ request.remote_addr }}
+                    </small>
+                </div>
+                {% endif %}
+
+                <!-- Helpful Actions -->
+                <div class="error-actions">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="bi bi-house-fill me-2"></i>Ir al Inicio
+                    </a>
+                    <button onclick="location.reload()" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Intentar de Nuevo
+                    </button>
+                </div>
+
+                <!-- What happened -->
+                <div class="mt-5 pt-4 border-top">
+                    <h5 class="mb-3">¿Qué ocurrió?</h5>
+                    <div class="row text-start">
+                        <div class="col-12">
+                            <div class="alert alert-light">
+                                <p class="mb-2">
+                                    <i class="bi bi-info-circle text-info me-2"></i>
+                                    Nuestros servidores encontraron un problema inesperado al procesar tu solicitud.
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-shield-check text-success me-2"></i>
+                                    Este error ha sido automáticamente reportado a nuestro equipo técnico.
+                                </p>
+                                <p class="mb-0">
+                                    <i class="bi bi-clock text-warning me-2"></i>
+                                    Normalmente estos problemas se resuelven rápidamente. Intenta de nuevo en unos minutos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="mt-4">
+                    <h6 class="text-muted mb-3">Si el problema persiste:</h6>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="mailto:admin@metadatos-app.com" class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-envelope me-1"></i>Reportar Error
+                        </a>
+                        <a href="{{ url_for('help_page') }}" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-question-circle me-1"></i>Centro de Ayuda
+                        </a>
+                        <button onclick="window.print()" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-printer me-1"></i>Imprimir Página
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.error-icon i {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.text-monospace {
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+}
+</style>
+
+<script>
+// Auto-refresh after 30 seconds (optional)
+setTimeout(function() {
+    if (confirm('¿Quieres intentar recargar la página automáticamente?')) {
+        location.reload();
+    }
+}, 30000);
+</script>
+{% endblock %}

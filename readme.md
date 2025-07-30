@@ -1,196 +1,492 @@
+# 📁 Metadatos App v2.0
 
-# Metadatos App
+Una aplicación web moderna y robusta desarrollada con Flask para la gestión integral de archivos digitales con soporte completo para metadatos Dublin Core. Incluye un panel de administración avanzado, sistema de búsqueda, y una interfaz pública responsive.
 
-Una aplicación web desarrollada con Flask y SQLite para la gestión y visualización de archivos con metadatos, siguiendo los estándares de Dublin Core. La aplicación incluye un panel de administración para subir y gestionar archivos, y una landing page pública para visualizarlos.
-
----
-
-## **Características**
-
-* **Gestión de Archivos**: Sube archivos con un título y una descripción.
-* **Panel de Administración**: Acceso restringido para un solo usuario (configurable) para subir y eliminar archivos.
-* **Landing Page Pública**: Muestra todos los archivos subidos de forma organizada.
-* **Sección de Ayuda**: Información detallada sobre la aplicación y los metadatos Dublin Core.
-* **Metadatos Dublin Core**: Integración de elementos clave de Dublin Core en las plantillas HTML para una mejor indexación y descripción de los recursos.
-* **Base de Datos SQLite**: Almacenamiento ligero y eficiente de los metadatos de los archivos.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.8+-brightgreen.svg)
+![Flask](https://img.shields.io/badge/flask-3.0+-red.svg)
+![Bootstrap](https://img.shields.io/badge/bootstrap-5.3-purple.svg)
 
 ---
 
-## **Tecnologías Utilizadas**
+## 🚀 **Características Principales**
 
-* **Backend**: Python 3, Flask, Flask-SQLAlchemy, Werkzeug
-* **Base de Datos**: SQLite
-* **Frontend**: HTML5, CSS3
+### ✨ **Funcionalidades Core**
+- **📤 Gestión de Archivos**: Subida segura con validación de tipos y tamaños
+- **🔐 Panel de Administración**: Acceso protegido con autenticación robusta
+- **🌐 Landing Page Pública**: Interfaz moderna y responsive para visualizar archivos
+- **📖 Sistema de Ayuda**: Documentación completa integrada
+- **🏷️ Metadatos Dublin Core**: Estándares internacionales para mejor indexación
+- **🔍 Búsqueda Avanzada**: Sistema de búsqueda por título, descripción y palabras clave
+- **📱 Diseño Responsive**: Optimizado para dispositivos móviles y escritorio
+
+### 🛡️ **Seguridad y Calidad**
+- **🔒 Autenticación Segura**: Hash de contraseñas con Werkzeug
+- **✅ Validación de Archivos**: Tipos permitidos y límites de tamaño
+- **🚫 Protección XSS**: Sanitización de nombres de archivos
+- **📊 Logging Completo**: Registro de actividades y errores
+- **🔧 Manejo de Errores**: Páginas de error personalizadas y recuperación graceful
+
+### 🎨 **Experiencia de Usuario**
+- **⚡ Interfaz Moderna**: Bootstrap 5.3 con componentes personalizados
+- **🎭 Animaciones Suaves**: Transiciones CSS y efectos interactivos
+- **♿ Accesibilidad**: Soporte para lectores de pantalla y navegación por teclado
+- **📄 Paginación**: Navegación eficiente para grandes colecciones
+- **🏷️ Iconos Dinámicos**: Iconos específicos por tipo de archivo
 
 ---
 
-## **Estructura del Proyecto**
+## 🏗️ **Arquitectura y Tecnologías**
+
+### **Backend**
+- **Python 3.8+** - Lenguaje principal
+- **Flask 3.0** - Framework web minimalista y potente
+- **SQLAlchemy** - ORM para manejo de base de datos
+- **SQLite** - Base de datos ligera y eficiente
+- **Werkzeug** - Utilidades WSGI y seguridad
+
+### **Frontend**
+- **HTML5** - Estructura moderna y semántica
+- **CSS3** - Estilos avanzados con Grid y Flexbox
+- **JavaScript ES6+** - Interactividad y mejoras UX
+- **Bootstrap 5.3** - Framework CSS responsive
+- **Bootstrap Icons** - Iconografía consistente
+
+### **Estándares y Metadatos**
+- **Dublin Core** - Metadatos estándar para recursos digitales
+- **Schema.org** - Datos estructurados para SEO
+- **Open Graph** - Metadatos para redes sociales
+- **WCAG 2.1** - Pautas de accesibilidad web
+
+---
+
+## 📁 **Estructura del Proyecto**
 
 ```
-
-metadatos/
-├── app.py                  \# Lógica principal de la aplicación Flask
-├── database.py             \# Configuración de la base de datos y modelo de archivos
-├── templates/              \# Archivos HTML (Jinja2)
-│   ├── base.html           \# Plantilla base con metadatos Dublin Core
-│   ├── index.html          \# Landing page principal
-│   ├── admin.html          \# Panel de administración
-│   ├── login.html          \# Página de login para el admin
-│   └── help.html           \# Sección de ayuda
-├── static/                 \# Archivos estáticos (CSS, JS)
-│   ├── css/
-│   │   └── style.css       \# Estilos CSS básicos
-│   └── js/
-│       └── script.js       \# (Opcional) Scripts JavaScript
-├── uploads/                \# Directorio para los archivos subidos (NO SUBIR AL REPO)
-├── .gitignore              \# Archivo para ignorar en Git
-├── requirements.txt        \# Dependencias de Python
-└── wsgi.py                 \# (Para PythonAnywhere) Punto de entrada WSGI
-
-````
-
----
-
-## **Configuración e Instalación Local**
-
-Sigue estos pasos para poner en marcha el proyecto en tu entorno local:
-
-1.  **Clonar el Repositorio:**
-    ```bash
-    git clone [https://github.com/TuUsuario/metadatos-app.git](https://github.com/TuUsuario/metadatos-app.git)
-    cd metadatos-app
-    ```
-
-2.  **Crear un Entorno Virtual (Recomendado):**
-    ```bash
-    python -m venv venv
-    # En Windows:
-    venv\Scripts\activate
-    # En macOS/Linux:
-    source venv/bin/activate
-    ```
-
-3.  **Instalar Dependencias:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4.  **Ejecutar la Aplicación:**
-    ```bash
-    python app.py
-    ```
-    La aplicación estará disponible en `http://127.0.0.1:5000/`.
+metadatos_app/
+├── 📄 app.py                      # Aplicación Flask principal
+├── 📄 database.py                 # Modelos y configuración de BD
+├── 📄 wsgi.py                     # Configuración WSGI mejorada
+├── 📄 requirements.txt            # Dependencias Python
+├── 📄 .env.example               # Variables de entorno de ejemplo
+├── 📄 README.md                  # Esta documentación
+├── 📁 templates/                 # Plantillas Jinja2
+│   ├── 📄 base.html              # Plantilla base con Dublin Core
+│   ├── 📄 index.html             # Página principal pública
+│   ├── 📄 admin.html             # Panel de administración
+│   ├── 📄 login.html             # Página de autenticación
+│   ├── 📄 help.html              # Centro de ayuda
+│   └── 📄 file_detail.html       # Vista detallada de archivos
+├── 📁 static/                    # Recursos estáticos
+│   ├── 📁 css/
+│   │   └── 📄 style.css          # Estilos personalizados
+│   ├── 📁 js/
+│   │   └── 📄 script.js          # JavaScript interactivo
+│   └── 📄 favicon.ico           # Icono de la aplicación
+├── 📁 uploads/                   # Archivos subidos (no en repo)
+├── 📁 logs/                      # Archivos de log (no en repo)
+└── 📁 docs/                      # Documentación adicional
+    └── 📄 comandos.md            # Comandos útiles de desarrollo
+```
 
 ---
 
-## **Uso de la Aplicación**
+## 🚀 **Instalación y Configuración**
 
-* **Página Principal (`/`)**: Muestra los archivos subidos.
-* **Ayuda (`/help`)**: Proporciona información sobre la aplicación y Dublin Core.
-* **Login (`/login`)**: Inicia sesión para acceder al panel de administración.
-    * **Usuario por defecto**: `admin`
-    * **Contraseña por defecto**: `adminpass`
-    * **¡ADVERTENCIA!** Cambia estas credenciales en `app.py` para producción y utiliza una contraseña segura.
-* **Panel de Administración (`/admin`)**:
-    * Sube nuevos archivos con un título y una descripción.
-    * Visualiza y elimina archivos existentes.
+### **Prerrequisitos**
+- Python 3.8 o superior
+- Git
+- Navegador web moderno
 
----
+### **1. Clonar el Repositorio**
+```bash
+git clone https://github.com/Gabo-araya/metadatos-app.git
+cd metadatos-app
+```
 
-## **Despliegue en PythonAnywhere**
+### **2. Configurar Entorno Virtual**
+```bash
+# Crear entorno virtual
+python3 -m venv env
 
-Para desplegar esta aplicación en PythonAnywhere, sigue estos pasos clave:
+# Activar entorno virtual
+# En Linux/macOS:
+source env/bin/activate
+# En Windows:
+env\Scripts\activate
+```
 
-1.  **Preparar tu Repositorio:**
-    * Asegúrate de que tu rama `main` o `master` en GitHub esté actualizada con la última versión de tu código.
+### **3. Instalar Dependencias**
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-2.  **Configurar PythonAnywhere:**
-    * Crea una cuenta en [PythonAnywhere](https://www.pythonanywhere.com/).
-    * Ve a la pestaña **Web** y haz clic en "Add a new web app".
-    * Selecciona el framework **Flask**.
-    * Elige la versión de Python (ej. Python 3.9).
+### **4. Configurar Variables de Entorno**
+```bash
+# Copiar archivo de ejemplo
+cp .env.example .env
 
-3.  **Clonar tu Repositorio en PythonAnywhere:**
-    * En la pestaña **Consoles**, abre una nueva "Bash console".
-    * Navega a la ubicación donde quieras clonar tu proyecto (por ejemplo, `cd /home/tu_usuario/`).
-    * Clona tu repositorio:
-        ```bash
-        git clone [https://github.com/TuUsuario/metadatos-app.git](https://github.com/TuUsuario/metadatos-app.git) metadatos_app_pa
-        # Asegúrate de usar un nombre de carpeta descriptivo, ej. metadatos_app_pa
-        ```
-    * Navega a la carpeta de tu proyecto: `cd metadatos_app_pa`
+# Editar .env con tus configuraciones
+nano .env  # o tu editor preferido
+```
 
-4.  **Crear y Activar un Entorno Virtual en PythonAnywhere:**
-    ```bash
-    mkvirtualenv --python=/usr/bin/python3.9 venv_metadatos # Ajusta la versión de Python si es necesario
-    source ~/.virtualenvs/venv_metadatos/bin/activate
-    ```
+**Variables críticas a configurar:**
+```env
+SECRET_KEY=tu-clave-secreta-muy-fuerte-aqui
+ADMIN_USERNAME=tu_admin_user
+ADMIN_PASSWORD=tu_contraseña_super_segura
+DATABASE_URL=sqlite:///metadatos.db
+UPLOAD_FOLDER=uploads
+```
 
-5.  **Instalar Dependencias en PythonAnywhere:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+### **5. Inicializar Base de Datos**
+```bash
+python -c "from app import app, db; app.app_context().push(); db.create_all(); print('Base de datos inicializada')"
+```
 
-6.  **Configurar el Archivo `wsgi.py`:**
-    * En PythonAnywhere, ve a la página de configuración de tu aplicación web (Web tab).
-    * En la sección "Code", busca "WSGI configuration file".
-    * Edita este archivo (normalmente `/var/www/tu_usuario_pythonanywhere_com_wsgi.py`).
-    * Reemplaza el contenido por algo similar a esto, asegurándote de que la ruta sea correcta:
+### **6. Ejecutar la Aplicación**
+```bash
+# Modo desarrollo
+flask run
 
-    ```python
-    import sys
-    import os
+# O directamente con Python
+python app.py
+```
 
-    # Añade el directorio raíz de tu proyecto al sys.path
-    project_home = '/home/tu_usuario/metadatos_app_pa' # <--- ¡CAMBIA ESTO!
-    if project_home not in sys.path:
-        sys.path.insert(0, project_home)
-
-    # Importa y ejecuta tu aplicación Flask
-    from app import app as application # 'application' es el nombre que PythonAnywhere espera
-    ```
-
-7.  **Actualizar la Base de Datos (Primera Vez):**
-    * En una Bash console, navega a tu directorio de proyecto (`cd /home/tu_usuario/metadatos_app_pa`).
-    * Asegúrate de que tu entorno virtual esté activado (`source ~/.virtualenvs/venv_metadatos/bin/activate`).
-    * Ejecuta un script para inicializar la base de datos (puedes crear un `init_db.py` simple o ejecutar una sección de `app.py`):
-        ```python
-        # Opcional: crea un archivo init_db.py:
-        # from app import app, db, init_db
-        # with app.app_context():
-        #     db.create_all()
-
-        # Luego ejecútalo:
-        # python init_db.py
-        ```
-        O, dado que `init_db(app)` se llama en `app.py` con `app.before_first_request`, la base de datos se creará la primera vez que la aplicación se cargue en PythonAnywhere. Sin embargo, para asegurarte, puedes acceder a la app después de configurarla.
-
-8.  **Configurar Variables de Entorno (Importante para `SECRET_KEY` y credenciales):**
-    * Nunca pongas la `SECRET_KEY` o contraseñas directamente en tu código en producción.
-    * En PythonAnywhere, en la página de tu aplicación web, en la sección "Environment variables", puedes añadir variables como:
-        * `FLASK_SECRET_KEY = TU_CLAVE_ALEATORIA_MUY_LARGA`
-    * Luego, en `app.py`, la accederías así: `app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'supersecretkey_dev')`
-
-9.  **Recargar la Aplicación:**
-    * Vuelve a la pestaña **Web** de PythonAnywhere y haz clic en el botón "Reload" (verde).
-
-¡Tu aplicación debería estar funcionando en la URL de PythonAnywhere!
+La aplicación estará disponible en: **http://127.0.0.1:5000**
 
 ---
 
-## **Contribuciones**
+## 🔧 **Configuración Avanzada**
 
-¡Las contribuciones son bienvenidas! Si encuentras un error o tienes una mejora, no dudes en abrir un *issue* o enviar un *pull request*.
+### **Variables de Entorno Disponibles**
+
+| Variable | Descripción | Valor por Defecto |
+|----------|-------------|-------------------|
+| `SECRET_KEY` | Clave secreta de Flask (OBLIGATORIO) | - |
+| `ADMIN_USERNAME` | Usuario administrador | `admin` |
+| `ADMIN_PASSWORD` | Contraseña administrador | `adminpass123!` |
+| `DATABASE_URL` | URL de conexión a BD | `sqlite:///metadatos.db` |
+| `UPLOAD_FOLDER` | Carpeta de archivos | `uploads` |
+| `MAX_CONTENT_LENGTH` | Tamaño máximo archivo | `16777216` (16MB) |
+| `LOG_LEVEL` | Nivel de logging | `INFO` |
+| `LOG_FILE` | Archivo de logs | `app.log` |
+
+### **Tipos de Archivo Soportados**
+
+#### 📄 **Documentos**
+- PDF, DOC, DOCX, TXT, RTF, ODT
+- XLS, XLSX, CSV, ODS
+- PPT, PPTX, ODP
+
+#### 🖼️ **Imágenes**
+- JPG, JPEG, PNG, GIF
+- BMP, WEBP, SVG
+
+#### 🎵 **Multimedia**
+- MP3, WAV, OGG (Audio)
+- MP4, AVI, MKV, MOV (Video)
+
+#### 📦 **Archivos Comprimidos**
+- ZIP, RAR, 7Z
+- TAR, GZ
+
+#### 💾 **Datos**
+- JSON, XML
+- Archivos de configuración
 
 ---
 
-## **Licencia**
+## 🌐 **Despliegue en Producción**
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles. (Si no tienes un archivo `LICENSE`, puedes crearlo).
+### **PythonAnywhere (Recomendado para principiantes)**
+
+1. **Preparar el código:**
+```bash
+git push origin main  # Asegurar que el código esté en GitHub
+```
+
+2. **En PythonAnywhere:**
+```bash
+# Clonar repositorio
+git clone https://github.com/Gabo-araya/metadatos-app.git metadatos_app
+
+# Crear entorno virtual
+mkvirtualenv --python=/usr/bin/python3.10 metadatos_env
+
+# Instalar dependencias
+cd metadatos_app
+pip install -r requirements.txt
+```
+
+3. **Configurar aplicación web:**
+   - Ve a la pestaña "Web"
+   - Crea nueva aplicación Flask
+   - Configura el archivo WSGI: `/var/www/tu_usuario_pythonanywhere_com_wsgi.py`
+
+```python
+import sys
+project_home = '/home/tu_usuario/metadatos_app'
+if project_home not in sys.path:
+    sys.path.insert(0, project_home)
+
+from wsgi import application
+```
+
+4. **Configurar variables de entorno en la pestaña "Files" → `.env`**
+
+### **VPS con Nginx + Gunicorn**
+
+1. **Instalar dependencias del sistema:**
+```bash
+sudo apt update
+sudo apt install python3-pip python3-venv nginx supervisor
+```
+
+2. **Configurar aplicación:**
+```bash
+cd /var/www/
+sudo git clone https://github.com/Gabo-araya/metadatos-app.git metadatos_app
+cd metadatos_app
+sudo python3 -m venv venv
+sudo venv/bin/pip install -r requirements.txt
+sudo venv/bin/pip install gunicorn
+```
+
+3. **Configurar Gunicorn (`/etc/supervisor/conf.d/metadatos.conf`):**
+```ini
+[program:metadatos]
+command=/var/www/metadatos_app/venv/bin/gunicorn --workers 3 --bind unix:/var/www/metadatos_app/metadatos.sock -m 007 wsgi:application
+directory=/var/www/metadatos_app
+user=www-data
+autostart=true
+autorestart=true
+redirect_stderr=true
+```
+
+4. **Configurar Nginx (`/etc/nginx/sites-available/metadatos`):**
+```nginx
+server {
+    listen 80;
+    server_name tu-dominio.com;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/var/www/metadatos_app/metadatos.sock;
+    }
+
+    location /static {
+        alias /var/www/metadatos_app/static;
+    }
+
+    location /uploads {
+        alias /var/www/metadatos_app/uploads;
+    }
+}
+```
+
+### **Docker (Avanzado)**
+
+```dockerfile
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:application"]
+```
 
 ---
 
-## **Contacto**
+## 📖 **Guía de Usuario**
 
-* **Tu Nombre/Alias**: [@TuUsuarioGitHub](https://github.com/TuUsuarioGitHub)
-* **Correo Electrónico (Opcional)**: tu.email@example.com
+### **Para Usuarios Públicos**
+
+1. **Explorar Archivos:**
+   - Visita la página principal
+   - Navega por las tarjetas de archivos
+   - Usa el buscador para encontrar contenido específico
+
+2. **Ver Detalles:**
+   - Haz clic en "Ver Detalles" para información completa
+   - Visualiza metadatos Dublin Core
+   - Descarga archivos directamente
+
+3. **Búsqueda:**
+   - Busca por título, descripción o palabras clave
+   - Utiliza filtros por tipo de archivo
+   - Navega por páginas de resultados
+
+### **Para Administradores**
+
+1. **Acceso:**
+   - Ve a `/login`
+   - Ingresa credenciales de administrador
+   - Accede al panel de control
+
+2. **Subir Archivos:**
+   - Completa título y descripción
+   - Selecciona archivo (máx. 16MB)
+   - Agrega palabras clave opcionales
+   - Confirma la subida
+
+3. **Gestionar Archivos:**
+   - Ver lista completa con paginación
+   - Eliminar archivos con confirmación
+   - Monitorear actividad en logs
+
+---
+
+## 🔒 **Seguridad**
+
+### **Mejores Prácticas Implementadas**
+
+- ✅ **Validación de entrada**: Sanitización de nombres de archivos
+- ✅ **Autenticación segura**: Hash de contraseñas con salt
+- ✅ **Protección CSRF**: Tokens en formularios críticos
+- ✅ **Límites de archivos**: Tamaño y tipos restringidos
+- ✅ **Logging de seguridad**: Registro de intentos de acceso
+- ✅ **Headers de seguridad**: XSS, CSRF, y clickjacking protection
+
+### **Configuración para Producción**
+
+```env
+# Configuración de seguridad
+SESSION_COOKIE_SECURE=True
+SESSION_COOKIE_HTTPONLY=True
+SESSION_COOKIE_SAMESITE=Strict
+PERMANENT_SESSION_LIFETIME=3600
+
+# SSL/TLS (recomendado)
+PREFERRED_URL_SCHEME=https
+```
+
+### **Checklist de Seguridad**
+
+- [ ] Cambiar credenciales por defecto
+- [ ] Configurar HTTPS en producción
+- [ ] Establecer límites de rate limiting
+- [ ] Configurar firewall adecuado
+- [ ] Implementar backups regulares
+- [ ] Monitorear logs de seguridad
+- [ ] Actualizar dependencias regularmente
+
+---
+
+## 🚨 **Solución de Problemas**
+
+### **Problemas Comunes**
+
+#### **Error: "Secret key not configured"**
+```bash
+# Verificar que SECRET_KEY esté configurada
+echo $SECRET_KEY
+
+# Si está vacía, configurarla:
+export SECRET_KEY="tu-clave-secreta-aqui"
+```
+
+#### **Error: "Permission denied" en uploads**
+```bash
+# Dar permisos a la carpeta uploads
+chmod 755 uploads/
+chown -R www-data:www-data uploads/  # En producción
+```
+
+#### **Error: "Database not found"**
+```bash
+# Inicializar base de datos
+python -c "from app import app, db; app.app_context().push(); db.create_all()"
+```
+
+#### **Archivos no se muestran**
+- Verificar permisos de la carpeta `uploads/`
+- Confirmar que la ruta en `.env` sea correcta
+- Revisar logs para errores específicos
+
+### **Debugging**
+
+```bash
+# Activar modo debug
+export FLASK_DEBUG=True
+flask run
+
+# Ver logs en tiempo real
+tail -f app.log
+
+# Verificar configuración
+python -c "from app import app; print(app.config)"
+```
+
+---
+
+## 🤝 **Contribución**
+
+### **Cómo Contribuir**
+
+1. **Fork del repositorio**
+2. **Crear rama de feature**: `git checkout -b feature/nueva-funcionalidad`
+3. **Commit cambios**: `git commit -am 'Agregar nueva funcionalidad'`
+4. **Push a la rama**: `git push origin feature/nueva-funcionalidad`
+5. **Crear Pull Request**
+
+### **Estándares de Código**
+
+- **Python**: PEP 8
+- **JavaScript**: ES6+
+- **HTML**: Semántico y accesible
+- **CSS**: BEM methodology
+- **Commits**: Conventional commits
+
+### **Estructura de Commits**
+```
+feat: nueva funcionalidad de búsqueda avanzada
+fix: corregir error en subida de archivos
+docs: actualizar documentación de API
+style: mejorar estilos de tarjetas de archivo
+refactor: reestructurar módulo de autenticación
+test: agregar tests para validación de archivos
+```
+
+---
+
+## 📚 **Recursos Adicionales**
+
+### **Documentación**
+- [Dublin Core Metadata Initiative](https://www.dublincore.org/)
+- [Flask Documentation](https://flask.palletsprojects.com/)
+- [Bootstrap 5 Documentation](https://getbootstrap.com/docs/5.3/)
+- [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
+
+### **Herramientas Recomendadas**
+- **IDE**: Visual Studio Code, PyCharm
+- **Git GUI**: GitKraken, SourceTree
+- **Testing**: Postman, curl
+- **Monitoring**: Sentry, LogRocket
+
+---
+
+## 👥 **Equipo y Contacto**
+
+**Desarrollador Principal:** Gabriel Araya
+**GitHub:** [@Gabo-araya](https://github.com/Gabo-araya)
+**LinkedIn:** [Gabriel Araya](https://www.linkedin.com/in/gaboaraya/)
+
+---
+
+## 🙏 **Agradecimientos**
+
+- **Flask Team** - Por el excelente framework
+- **Bootstrap Team** - Por los componentes UI
+- **Dublin Core Initiative** - Por los estándares de metadatos
+- **Font Awesome & Bootstrap Icons** - Por la iconografía
+- **Comunidad Open Source** - Por las contribuciones y feedback
+
+---

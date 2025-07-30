@@ -1,32 +1,337 @@
 {% extends "base.html" %}
 
-{% block title %}Login de Administración{% endblock %}
-{% block dc_title %}Login de Administración{% endblock %}
-{% block dc_description %}Página de inicio de sesión para el panel de administración.{% endblock %}
+{% block title %}Iniciar Sesión - Metadatos App{% endblock %}
+{% block dc_title %}Iniciar Sesión{% endblock %}
+{% block dc_description %}Página de autenticación para administradores de Metadatos App. Acceso seguro al panel de gestión de archivos digitales.{% endblock %}
+{% block dc_subject %}autenticación, login, administración, acceso seguro{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+        </li>
+    </ol>
+</nav>
+{% endblock %}
 
 {% block content %}
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white text-center">
-                    <h3>Login de Administración</h3>
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7 col-sm-9">
+            <!-- Login Card -->
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-dark text-white text-center py-4">
+                    <div class="mb-3">
+                        <i class="bi bi-shield-lock-fill display-4"></i>
+                    </div>
+                    <h2 class="card-title mb-0">Administración</h2>
+                    <p class="card-text mt-2 opacity-75">
+                        Acceso al panel de gestión
+                    </p>
                 </div>
-                <div class="card-body">
-                    <form method="POST">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Usuario:</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
+
+                <div class="card-body p-5">
+                    <form method="POST" id="loginForm" novalidate>
+                        <!-- Username Field -->
+                        <div class="mb-4">
+                            <label for="username" class="form-label fw-bold">
+                                <i class="bi bi-person me-1 text-primary"></i>Usuario
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-person-fill text-muted"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-lg"
+                                    id="username"
+                                    name="username"
+                                    required
+                                    autocomplete="username"
+                                    placeholder="Ingresa tu usuario"
+                                    autofocus
+                                >
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa tu nombre de usuario.
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña:</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+
+                        <!-- Password Field -->
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-bold">
+                                <i class="bi bi-lock me-1 text-primary"></i>Contraseña
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-lock-fill text-muted"></i>
+                                </span>
+                                <input
+                                    type="password"
+                                    class="form-control form-control-lg"
+                                    id="password"
+                                    name="password"
+                                    required
+                                    autocomplete="current-password"
+                                    placeholder="Ingresa tu contraseña"
+                                >
+                                <button
+                                    class="btn btn-outline-secondary"
+                                    type="button"
+                                    id="togglePassword"
+                                    aria-label="Mostrar/ocultar contraseña"
+                                >
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
+                                </button>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa tu contraseña.
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+
+                        <!-- Remember Session (Visual only, no backend implementation) -->
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+                                <label class="form-check-label text-muted" for="rememberMe">
+                                    Recordar por más tiempo
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg" id="loginBtn">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                            </button>
+                        </div>
+
+                        <!-- Security Notice -->
+                        <div class="alert alert-info border-0" role="alert">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-info-circle-fill me-2 mt-1 text-primary"></i>
+                                <div>
+                                    <strong>Aviso de Seguridad:</strong><br>
+                                    <small>Solo personal autorizado puede acceder a este panel. Todas las actividades son registradas.</small>
+                                </div>
+                            </div>
                         </div>
                     </form>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Conexión segura -
+                        <a href="{{ url_for('help_page') }}" class="text-decoration-none">¿Necesitas ayuda?</a>
+                    </small>
+                </div>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Info Section -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-8">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body py-4">
+                            <i class="bi bi-cloud-upload display-5 text-primary mb-3"></i>
+                            <h6 class="card-title">Gestión de Archivos</h6>
+                            <p class="card-text small text-muted">
+                                Sube y organiza archivos con metadatos completos
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body py-4">
+                            <i class="bi bi-tags display-5 text-success mb-3"></i>
+                            <h6 class="card-title">Dublin Core</h6>
+                            <p class="card-text small text-muted">
+                                Metadatos estándar para mejor organización
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body py-4">
+                            <i class="bi bi-shield-check display-5 text-warning mb-3"></i>
+                            <h6 class="card-title">Administración Segura</h6>
+                            <p class="card-text small text-muted">
+                                Panel protegido con autenticación robusta
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const usernameInput = document.getElementById('username');
+
+    // Password visibility toggle
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Toggle icon
+        if (type === 'password') {
+            toggleIcon.className = 'bi bi-eye';
+        } else {
+            toggleIcon.className = 'bi bi-eye-slash';
+        }
+    });
+
+    // Form validation and submission
+    form.addEventListener('submit', function(e) {
+        // Clear previous validation states
+        form.classList.remove('was-validated');
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        // Basic validation
+        if (!username || !password) {
+            e.preventDefault();
+            e.stopPropagation();
+            form.classList.add('was-validated');
+            return;
+        }
+
+        // Show loading state
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Verificando...';
+
+        // Add visual feedback
+        loginBtn.classList.add('btn-loading');
+    });
+
+    // Input animations and validation feedback
+    [usernameInput, passwordInput].forEach(input => {
+        input.addEventListener('focus', function() {
+            this.closest('.input-group').classList.add('input-group-focus');
+        });
+
+        input.addEventListener('blur', function() {
+            this.closest('.input-group').classList.remove('input-group-focus');
+        });
+
+        input.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
+            }
+        });
+    });
+
+    // Enhanced security: Disable autocomplete on password after a delay
+    setTimeout(() => {
+        passwordInput.setAttribute('autocomplete', 'off');
+    }, 1000);
+
+    // Prevent multiple rapid submissions
+    let submitTimeout;
+    form.addEventListener('submit', function() {
+        if (submitTimeout) {
+            clearTimeout(submitTimeout);
+        }
+        submitTimeout = setTimeout(() => {
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión';
+            loginBtn.classList.remove('btn-loading');
+        }, 3000);
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Alt + L to focus username
+        if (e.altKey && e.key === 'l') {
+            e.preventDefault();
+            usernameInput.focus();
+        }
+    });
+
+    // Auto-clear any error messages after user starts typing
+    [usernameInput, passwordInput].forEach(input => {
+        input.addEventListener('input', function() {
+            const alerts = document.querySelectorAll('.alert-danger');
+            alerts.forEach(alert => {
+                if (alert.textContent.includes('incorrectos')) {
+                    alert.style.opacity = '0.5';
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.remove();
+                        }
+                    }, 2000);
+                }
+            });
+        });
+    });
+});
+</script>
+
+<style>
+.input-group-focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    border-radius: 0.375rem;
+}
+
+.btn-loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Custom animations for form elements */
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.is-valid {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='m2.3 6.73.94-.94-.94-.94L1.36 5.8l.94.93zm2.4-2.4L6.64 2.4 5.7 1.46 4.76 2.4 3.82 1.46 2.88 2.4l.94.94-.94.94.94.94.94-.94z'/%3e%3c/svg%3e");
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .card-body {
+        padding: 2rem 1.5rem !important;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+</style>
 {% endblock %}

@@ -1,62 +1,559 @@
 {% extends "base.html" %}
 
-{% block title %}Ayuda{% endblock %}
-{% block dc_title %}Ayuda{% endblock %}
-{% block dc_description %}Página de ayuda de Metadatos App.{% endblock %}
+{% block title %}Ayuda y Documentación - Metadatos App{% endblock %}
+{% block dc_title %}Ayuda y Documentación{% endblock %}
+{% block dc_description %}Guía completa de uso de Metadatos App, incluyendo información sobre Dublin Core, gestión de archivos y funcionalidades administrativas.{% endblock %}
+{% block dc_subject %}ayuda, documentación, guía de usuario, Dublin Core, gestión de archivos{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="bi bi-question-circle-fill me-1"></i>Ayuda
+        </li>
+    </ol>
+</nav>
+{% endblock %}
 
 {% block content %}
-    <h2 class="mb-4">Ayuda</h2>
-
-    <section class="mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title">¿Qué es Metadatos App?</h3>
-                <p class="card-text">Metadatos App es una aplicación diseñada para gestionar y visualizar archivos digitales, asociados con un título y una descripción. Permite a los administradores subir, organizar y eliminar estos archivos, los cuales luego son accesibles al público a través de una página principal.</p>
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold text-primary mb-3">
+                <i class="bi bi-book me-3"></i>Centro de Ayuda
+            </h1>
+            <p class="lead text-muted">
+                Encuentra respuestas a tus preguntas y aprende a usar Metadatos App de manera efectiva.
+            </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+            <div class="bg-light p-3 rounded">
+                <h6 class="mb-2">¿Necesitas más ayuda?</h6>
+                <p class="small text-muted mb-2">
+                    Si no encuentras lo que buscas, contacta al administrador.
+                </p>
+                <a href="https://www.linkedin.com/in/gaboaraya/" class="btn btn-outline-primary btn-sm" target="_blank">
+                    <i class="bi bi-envelope me-1"></i>Contactar
+                </a>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title">¿Cómo subo un archivo? (Para administradores)</h3>
-                <ol class="list-group list-group-numbered">
-                    <li class="list-group-item">Inicia sesión en el panel de administración usando tus credenciales.</li>
-                    <li class="list-group-item">En la sección "Subir Nuevo Archivo", introduce un título descriptivo y una descripción detallada del archivo.</li>
-                    <li class="list-group-item">Haz clic en "Seleccionar Archivo" para elegir el archivo que deseas subir desde tu equipo.</li>
-                    <li class="list-group-item">Finalmente, haz clic en "Subir Archivo". El archivo se guardará en el servidor y sus metadatos se registrarán en la base de datos.</li>
-                </ol>
+    <!-- Quick Navigation -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card bg-light border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-compass me-2"></i>Navegación Rápida
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="#que-es" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                                <i class="bi bi-info-circle me-1"></i>¿Qué es?
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#como-usar" class="btn btn-outline-success btn-sm w-100 mb-2">
+                                <i class="bi bi-play-circle me-1"></i>Cómo usar
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#dublin-core" class="btn btn-outline-info btn-sm w-100 mb-2">
+                                <i class="bi bi-tags me-1"></i>Dublin Core
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="#admin-guide" class="btn btn-outline-warning btn-sm w-100 mb-2">
+                                <i class="bi bi-gear me-1"></i>Administración
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title">¿Cómo veo los archivos disponibles?</h3>
-                <p class="card-text">En la página de inicio (sección "Inicio"), encontrarás una lista de todos los archivos que han sido subidos. Cada entrada mostrará el título, la descripción y un enlace para ver o descargar el archivo.</p>
+    <!-- Content Sections -->
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- What is Metadatos App -->
+            <section id="que-es" class="mb-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-question-circle-fill me-2"></i>¿Qué es Metadatos App?
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Metadatos App</strong> es una aplicación web moderna diseñada para la gestión integral de archivos digitales con soporte completo para metadatos Dublin Core. La plataforma permite a los administradores:
+                        </p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="bi bi-cloud-upload text-primary me-2"></i>
+                                <strong>Subir archivos</strong> de múltiples formatos con títulos y descripciones detalladas
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-tags text-success me-2"></i>
+                                <strong>Organizar contenido</strong> usando estándares de metadatos reconocidos internacionalmente
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-search text-info me-2"></i>
+                                <strong>Facilitar la búsqueda</strong> y localización de recursos digitales
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-share text-warning me-2"></i>
+                                <strong>Compartir recursos</strong> de manera pública y accesible
+                            </li>
+                        </ul>
+
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <strong>Ideal para:</strong> Bibliotecas digitales, centros de documentación, archivos institucionales, proyectos educativos y cualquier organización que necesite gestionar y compartir recursos digitales de manera profesional.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How to Use -->
+            <section id="como-usar" class="mb-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-play-circle-fill me-2"></i>Cómo Usar la Aplicación
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="usageAccordion">
+                            <!-- For Public Users -->
+                            <div class="accordion-item">
+                                <h4 class="accordion-header" id="publicUsers">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#publicUsersContent" aria-expanded="true" aria-controls="publicUsersContent">
+                                        <i class="bi bi-people me-2"></i>Para Usuarios Públicos
+                                    </button>
+                                </h4>
+                                <div id="publicUsersContent" class="accordion-collapse collapse show" aria-labelledby="publicUsers" data-bs-parent="#usageAccordion">
+                                    <div class="accordion-body">
+                                        <ol class="list-group list-group-numbered">
+                                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                <div class="ms-2 me-auto">
+                                                    <div class="fw-bold">Explorar la Colección</div>
+                                                    Visita la <a href="{{ url_for('index') }}">página principal</a> para ver todos los archivos disponibles organizados en tarjetas informativas.
+                                                </div>
+                                                <span class="badge bg-primary rounded-pill">1</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                <div class="ms-2 me-auto">
+                                                    <div class="fw-bold">Buscar Archivos</div>
+                                                    Utiliza la barra de búsqueda para encontrar archivos específicos por título o descripción.
+                                                </div>
+                                                <span class="badge bg-primary rounded-pill">2</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                <div class="ms-2 me-auto">
+                                                    <div class="fw-bold">Ver y Descargar</div>
+                                                    Haz clic en "Ver/Descargar" para acceder al archivo o en "Ver Detalles" para más información.
+                                                </div>
+                                                <span class="badge bg-primary rounded-pill">3</span>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- For Administrators -->
+                            <div class="accordion-item">
+                                <h4 class="accordion-header" id="adminUsers">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#adminUsersContent" aria-expanded="false" aria-controls="adminUsersContent">
+                                        <i class="bi bi-gear me-2"></i>Para Administradores
+                                    </button>
+                                </h4>
+                                <div id="adminUsersContent" class="accordion-collapse collapse" aria-labelledby="adminUsers" data-bs-parent="#usageAccordion">
+                                    <div class="accordion-body">
+                                        <h6 class="text-primary mb-3"><i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión</h6>
+                                        <ol class="list-group list-group-numbered mb-4">
+                                            <li class="list-group-item">Ve a la página de <a href="{{ url_for('login') }}">inicio de sesión</a></li>
+                                            <li class="list-group-item">Ingresa tus credenciales de administrador</li>
+                                            <li class="list-group-item">Accede al panel de administración</li>
+                                        </ol>
+
+                                        <h6 class="text-success mb-3"><i class="bi bi-cloud-upload me-1"></i>Subir Archivos</h6>
+                                        <ol class="list-group list-group-numbered mb-4">
+                                            <li class="list-group-item">
+                                                <strong>Completa el formulario:</strong>
+                                                <ul class="mt-2">
+                                                    <li>Título descriptivo (máximo 255 caracteres)</li>
+                                                    <li>Descripción detallada del contenido</li>
+                                                    <li>Palabras clave opcionales para categorización</li>
+                                                </ul>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>Selecciona el archivo:</strong> Formatos soportados incluyen documentos, imágenes, audio, video y archivos comprimidos (máximo 16MB)
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>Haz clic en "Subir Archivo"</strong> y espera la confirmación
+                                            </li>
+                                        </ol>
+
+                                        <h6 class="text-warning mb-3"><i class="bi bi-folder-open me-1"></i>Gestionar Archivos</h6>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2"><i class="bi bi-eye text-info me-2"></i>Ver detalles completos de cada archivo</li>
+                                            <li class="mb-2"><i class="bi bi-trash text-danger me-2"></i>Eliminar archivos con confirmación de seguridad</li>
+                                            <li class="mb-2"><i class="bi bi-list-ul text-primary me-2"></i>Navegar por páginas de archivos</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dublin Core Section -->
+            <section id="dublin-core" class="mb-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-tags-fill me-2"></i>¿Qué son los Metadatos Dublin Core?
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">
+                            Los <strong>metadatos Dublin Core</strong> son un conjunto estándar de elementos descriptivos diseñados para facilitar la búsqueda, identificación y gestión de recursos digitales.
+                        </p>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5 class="text-primary">Beneficios Principales</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Interoperabilidad global</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Mejor indexación por buscadores</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Descripción consistente</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Facilita el intercambio de datos</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="text-warning">En Esta Aplicación</h5>
+                                <p class="small text-muted">
+                                    Cada archivo subido se enriquece automáticamente con metadatos Dublin Core, mejorando su visibilidad y capacidad de búsqueda tanto interna como externamente.
+                                </p>
+                            </div>
+                        </div>
+
+                        <h5 class="text-primary mb-3">Elementos Dublin Core Utilizados</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Elemento</th>
+                                        <th>Descripción</th>
+                                        <th>Ejemplo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>DC.title</code></td>
+                                        <td>Título del recurso</td>
+                                        <td>Manual de Usuario 2024</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DC.creator</code></td>
+                                        <td>Entidad responsable del contenido</td>
+                                        <td>Metadatos App Team</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DC.description</code></td>
+                                        <td>Resumen del contenido</td>
+                                        <td>Guía completa para usuarios...</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DC.date</code></td>
+                                        <td>Fecha de publicación</td>
+                                        <td>2024-03-15</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DC.type</code></td>
+                                        <td>Naturaleza del contenido</td>
+                                        <td>Archivo Digital</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DC.format</code></td>
+                                        <td>Formato del archivo</td>
+                                        <td>PDF, DOCX, JPG</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DC.language</code></td>
+                                        <td>Idioma del contenido</td>
+                                        <td>es (Español)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DC.subject</code></td>
+                                        <td>Palabras clave/temas</td>
+                                        <td>documentación, tutorial</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DC.rights</code></td>
+                                        <td>Información de derechos</td>
+                                        <td>© 2024 Metadatos App</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Guide -->
+            <section id="admin-guide" class="mb-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-warning text-dark">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-shield-lock-fill me-2"></i>Guía de Administración Avanzada
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-primary mb-3">Buenas Prácticas</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <i class="bi bi-lightbulb text-warning me-2"></i>
+                                        <strong>Títulos descriptivos:</strong> Usa nombres claros que reflejen el contenido
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="bi bi-text-paragraph text-info me-2"></i>
+                                        <strong>Descripciones completas:</strong> Incluye contexto, propósito y audiencia objetivo
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="bi bi-tags text-success me-2"></i>
+                                        <strong>Palabras clave:</strong> Facilita la búsqueda con términos relevantes
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="bi bi-file-check text-primary me-2"></i>
+                                        <strong>Formatos estándar:</strong> Prefiere formatos ampliamente soportados
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="text-danger mb-3">Aspectos de Seguridad</h5>
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <strong>Importante:</strong>
+                                    <ul class="mb-0 mt-2">
+                                        <li>Cambia las credenciales por defecto</li>
+                                        <li>Mantén la aplicación actualizada</li>
+                                        <li>Revisa regularmente los archivos subidos</li>
+                                        <li>Realiza respaldos periódicos</li>
+                                    </ul>
+                                </div>
+
+                                <h6 class="text-info mt-3">Archivos Soportados</h6>
+                                <div class="row small">
+                                    <div class="col-6">
+                                        <strong>Documentos:</strong><br>
+                                        PDF, DOC, DOCX, TXT
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Imágenes:</strong><br>
+                                        JPG, PNG, GIF, BMP
+                                    </div>
+                                    <div class="col-6 mt-2">
+                                        <strong>Audio/Video:</strong><br>
+                                        MP3, MP4, AVI, WAV
+                                    </div>
+                                    <div class="col-6 mt-2">
+                                        <strong>Otros:</strong><br>
+                                        ZIP, RAR, CSV, JSON
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 100px;">
+                <!-- Quick Links -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-link-45deg me-2"></i>Enlaces Rápidos
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ url_for('index') }}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-house-fill me-2"></i>Ver Archivos Disponibles
+                            </a>
+                            {% if not session.logged_in %}
+                            <a href="{{ url_for('login') }}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Acceder como Admin
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('admin_panel') }}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Administración
+                            </a>
+                            {% endif %}
+                            <a href="https://www.dublincore.org/" target="_blank" class="list-group-item list-group-item-action">
+                                <i class="bi bi-box-arrow-up-right me-2"></i>Dublin Core Official
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-question-octagon me-2"></i>Preguntas Frecuentes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion accordion-flush" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h6 class="accordion-header" id="faq1">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqContent1">
+                                        ¿Qué tamaño máximo tienen los archivos?
+                                    </button>
+                                </h6>
+                                <div id="faqContent1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body small">
+                                        El tamaño máximo por archivo es de 16MB para garantizar un rendimiento óptimo de la plataforma.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h6 class="accordion-header" id="faq2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqContent2">
+                                        ¿Puedo editar archivos ya subidos?
+                                    </button>
+                                </h6>
+                                <div id="faqContent2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body small">
+                                        Actualmente solo es posible eliminar archivos. Para modificar contenido, debes eliminar y volver a subir el archivo.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h6 class="accordion-header" id="faq3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqContent3">
+                                        ¿Los archivos son públicos?
+                                    </button>
+                                </h6>
+                                <div id="faqContent3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body small">
+                                        Sí, todos los archivos subidos son accesibles públicamente. No subas contenido confidencial.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Version Info -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted">Metadatos App v2.0</h6>
+                        <small class="text-muted">
+                            <i class="bi bi-calendar3 me-1"></i>Actualizado {{ current_year() }}<br>
+                            <i class="bi bi-code-square me-1"></i>Flask + SQLite + Dublin Core
+                        </small>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+{% endblock %}
 
-    <section class="mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title">¿Qué son los metadatos Dublin Core?</h3>
-                <p class="card-text">Los metadatos Dublin Core son un conjunto de elementos estándar para describir recursos digitales. En esta aplicación, utilizamos estos metadatos para mejorar la interoperabilidad y la capacidad de búsqueda de los archivos. Puedes ver estos metadatos incrustados en el código fuente de las páginas.</p>
-                <p class="card-text">Algunos de los elementos de Dublin Core utilizados incluyen:</p>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>DC.title</strong>: Título del recurso.</li>
-                    <li class="list-group-item"><strong>DC.creator</strong>: Entidad responsable principal del contenido.</li>
-                    <li class="list-group-item"><strong>DC.publisher</strong>: Entidad responsable de hacer el recurso disponible.</li>
-                    <li class="list-group-item"><strong>DC.date</strong>: Fecha de publicación o disponibilidad del recurso.</li>
-                    <li class="list-group-item"><strong>DC.type</strong>: Género o naturaleza del contenido.</li>
-                    <li class="list-group-item"><strong>DC.format</strong>: Formato físico o digital del recurso.</li>
-                    <li class="list-group-item"><strong>DC.language</strong>: Idioma del contenido.</li>
-                    <li class="list-group-item"><strong>DC.description</strong>: Resumen del contenido.</li>
-                    <li class="list-group-item"><strong>DC.rights</strong>: Información sobre derechos de autor o permisos.</li>
-                </ul>
-            </div>
-        </div>
-    </section>
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Auto-collapse accordion when another item is opened
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(accordion => {
+        accordion.addEventListener('show.bs.collapse', function(e) {
+            const openItem = accordion.querySelector('.collapse.show');
+            if (openItem && openItem !== e.target) {
+                const bsCollapse = new bootstrap.Collapse(openItem, {
+                    toggle: false
+                });
+                bsCollapse.hide();
+            }
+        });
+    });
+
+    // Highlight current section in navigation
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('a[href^="#"]');
+
+    function highlightCurrentSection() {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (window.pageYOffset >= (sectionTop - 200)) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + current) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', highlightCurrentSection);
+    highlightCurrentSection(); // Initial call
+});
+</script>
+
+<style>
+.sticky-top {
+    z-index: 1020;
+}
+
+a.active {
+    background-color: var(--bs-primary-bg-subtle) !important;
+    color: var(--bs-primary) !important;
+    font-weight: 600;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease-in-out;
+}
+
+@media (max-width: 992px) {
+    .sticky-top {
+        position: relative !important;
+        top: auto !important;
+    }
+}
+</style>
 {% endblock %}
