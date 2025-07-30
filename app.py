@@ -24,6 +24,30 @@ with app.app_context():
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD_HASH = generate_password_hash('adminpass') # ¡Cambia esto!
 
+# Diccionario para mapear extensiones de archivo a clases de íconos de Bootstrap
+FILE_ICON_MAP = {
+    'pdf': 'bi-file-earmark-pdf-fill',
+    'doc': 'bi-file-earmark-word-fill',
+    'docx': 'bi-file-earmark-word-fill',
+    'xls': 'bi-file-earmark-excel-fill',
+    'xlsx': 'bi-file-earmark-excel-fill',
+    'ppt': 'bi-file-earmark-ppt-fill',
+    'pptx': 'bi-file-earmark-ppt-fill',
+    'jpg': 'bi-file-earmark-image-fill',
+    'jpeg': 'bi-file-earmark-image-fill',
+    'png': 'bi-file-earmark-image-fill',
+    'gif': 'bi-file-earmark-image-fill',
+    'zip': 'bi-file-earmark-zip-fill',
+    'rar': 'bi-file-earmark-zip-fill',
+    'txt': 'bi-file-earmark-text-fill',
+    'csv': 'bi-file-earmark-spreadsheet-fill',
+    'mp3': 'bi-file-earmark-music-fill',
+    'mp4': 'bi-file-earmark-play-fill',
+    'avi': 'bi-file-earmark-play-fill',
+    'exe': 'bi-file-earmark-code-fill', # O un icono de programa
+    # Añade más extensiones y sus íconos correspondientes
+}
+
 def create_admin_user():
     # En una aplicación real, esto se manejaría mejor, quizás con una migración o un script de setup
     pass # Ya que es un usuario fijo, no necesitamos crearlo en la DB aquí.
@@ -37,6 +61,16 @@ def login_required(f):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
+
+# Función para obtener la clase de ícono según la extensión
+@app.context_processor
+def utility_processor():
+    def get_file_icon(filename):
+        _, ext = os.path.splitext(filename)
+        ext = ext.lstrip('.').lower()
+        return FILE_ICON_MAP.get(ext, 'bi-file-earmark') # Ícono por defecto si no se encuentra
+    return dict(get_file_icon=get_file_icon)
+
 
 @app.route('/')
 def index():

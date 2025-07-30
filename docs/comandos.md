@@ -8,6 +8,7 @@
 
 2. Activamos el entorno virtual
    ```bash
+   source env/bin/activate
    source env/bin/activate; clear
    ```
 

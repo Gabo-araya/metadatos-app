@@ -5,41 +5,58 @@
 {% block dc_description %}Página de ayuda de Metadatos App.{% endblock %}
 
 {% block content %}
-    <h2>Ayuda</h2>
-    <section>
-        <h3>¿Qué es Metadatos App?</h3>
-        <p>Metadatos App es una aplicación diseñada para gestionar y visualizar archivos digitales, asociados con un título y una descripción. Permite a los administradores subir, organizar y eliminar estos archivos, los cuales luego son accesibles al público a través de una página principal.</p>
+    <h2 class="mb-4">Ayuda</h2>
+
+    <section class="mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">¿Qué es Metadatos App?</h3>
+                <p class="card-text">Metadatos App es una aplicación diseñada para gestionar y visualizar archivos digitales, asociados con un título y una descripción. Permite a los administradores subir, organizar y eliminar estos archivos, los cuales luego son accesibles al público a través de una página principal.</p>
+            </div>
+        </div>
     </section>
 
-    <section>
-        <h3>¿Cómo subo un archivo? (Para administradores)</h3>
-        <ol>
-            <li>Inicia sesión en el panel de administración usando tus credenciales.</li>
-            <li>En la sección "Subir Nuevo Archivo", introduce un título descriptivo y una descripción detallada del archivo.</li>
-            <li>Haz clic en "Seleccionar Archivo" para elegir el archivo que deseas subir desde tu equipo.</li>
-            <li>Finalmente, haz clic en "Subir Archivo". El archivo se guardará en el servidor y sus metadatos se registrarán en la base de datos.</li>
-        </ol>
+    <section class="mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">¿Cómo subo un archivo? (Para administradores)</h3>
+                <ol class="list-group list-group-numbered">
+                    <li class="list-group-item">Inicia sesión en el panel de administración usando tus credenciales.</li>
+                    <li class="list-group-item">En la sección "Subir Nuevo Archivo", introduce un título descriptivo y una descripción detallada del archivo.</li>
+                    <li class="list-group-item">Haz clic en "Seleccionar Archivo" para elegir el archivo que deseas subir desde tu equipo.</li>
+                    <li class="list-group-item">Finalmente, haz clic en "Subir Archivo". El archivo se guardará en el servidor y sus metadatos se registrarán en la base de datos.</li>
+                </ol>
+            </div>
+        </div>
     </section>
 
-    <section>
-        <h3>¿Cómo veo los archivos disponibles?</h3>
-        <p>En la página de inicio (sección "Inicio"), encontrarás una lista de todos los archivos que han sido subidos. Cada entrada mostrará el título, la descripción y un enlace para ver o descargar el archivo.</p>
+    <section class="mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">¿Cómo veo los archivos disponibles?</h3>
+                <p class="card-text">En la página de inicio (sección "Inicio"), encontrarás una lista de todos los archivos que han sido subidos. Cada entrada mostrará el título, la descripción y un enlace para ver o descargar el archivo.</p>
+            </div>
+        </div>
     </section>
 
-    <section>
-        <h3>¿Qué son los metadatos Dublin Core?</h3>
-        <p>Los metadatos Dublin Core son un conjunto de elementos estándar para describir recursos digitales. En esta aplicación, utilizamos estos metadatos para mejorar la interoperabilidad y la capacidad de búsqueda de los archivos. Puedes ver estos metadatos incrustados en el código fuente de las páginas.</p>
-        <p>Algunos de los elementos de Dublin Core utilizados incluyen:</p>
-        <ul>
-            <li>**DC.title**: Título del recurso.</li>
-            <li>**DC.creator**: Entidad responsable principal del contenido.</li>
-            <li>**DC.publisher**: Entidad responsable de hacer el recurso disponible.</li>
-            <li>**DC.date**: Fecha de publicación o disponibilidad del recurso.</li>
-            <li>**DC.type**: Género o naturaleza del contenido.</li>
-            <li>**DC.format**: Formato físico o digital del recurso.</li>
-            <li>**DC.language**: Idioma del contenido.</li>
-            <li>**DC.description**: Resumen del contenido.</li>
-            <li>**DC.rights**: Información sobre derechos de autor o permisos.</li>
-        </ul>
+    <section class="mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">¿Qué son los metadatos Dublin Core?</h3>
+                <p class="card-text">Los metadatos Dublin Core son un conjunto de elementos estándar para describir recursos digitales. En esta aplicación, utilizamos estos metadatos para mejorar la interoperabilidad y la capacidad de búsqueda de los archivos. Puedes ver estos metadatos incrustados en el código fuente de las páginas.</p>
+                <p class="card-text">Algunos de los elementos de Dublin Core utilizados incluyen:</p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>DC.title</strong>: Título del recurso.</li>
+                    <li class="list-group-item"><strong>DC.creator</strong>: Entidad responsable principal del contenido.</li>
+                    <li class="list-group-item"><strong>DC.publisher</strong>: Entidad responsable de hacer el recurso disponible.</li>
+                    <li class="list-group-item"><strong>DC.date</strong>: Fecha de publicación o disponibilidad del recurso.</li>
+                    <li class="list-group-item"><strong>DC.type</strong>: Género o naturaleza del contenido.</li>
+                    <li class="list-group-item"><strong>DC.format</strong>: Formato físico o digital del recurso.</li>
+                    <li class="list-group-item"><strong>DC.language</strong>: Idioma del contenido.</li>
+                    <li class="list-group-item"><strong>DC.description</strong>: Resumen del contenido.</li>
+                    <li class="list-group-item"><strong>DC.rights</strong>: Información sobre derechos de autor o permisos.</li>
+                </ul>
+            </div>
+        </div>
     </section>
 {% endblock %}

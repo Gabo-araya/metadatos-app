@@ -5,53 +5,82 @@
 {% block dc_description %}Panel para subir y gestionar archivos en Metadatos App.{% endblock %}
 
 {% block content %}
-    <h2>Panel de Administración</h2>
+    <h2 class="mb-4">Panel de Administración</h2>
 
-    <h3>Subir Nuevo Archivo</h3>
-    <form method="POST" enctype="multipart/form-data" class="upload-form">
-        <label for="title">Título:</label>
-        <input type="text" id="title" name="title" required><br>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3>Subir Nuevo Archivo</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Título:</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descripción:</label>
+                    <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="file" class="form-label">Seleccionar Archivo:</label>
+                    <input type="file" class="form-control" id="file" name="file" required>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-upload me-1"></i> Subir Archivo
+                </button>
+            </form>
+        </div>
+    </div>
 
-        <label for="description">Descripción:</label>
-        <textarea id="description" name="description" rows="4" required></textarea><br>
+    <hr class="my-5">
 
-        <label for="file">Seleccionar Archivo:</label>
-        <input type="file" id="file" name="file" required><br>
-
-        <button type="submit">Subir Archivo</button>
-    </form>
-
-    <hr>
-
-    <h3>Archivos Existentes</h3>
-    {% if files %}
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Descripción</th>
-                    <th>Nombre de Archivo</th>
-                    <th>Fecha de Subida</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for file in files %}
-                    <tr>
-                        <td>{{ file.title }}</td>
-                        <td>{{ file.description }}</td>
-                        <td><a href="{{ url_for('static', filename='../uploads/' + file.filename) }}" target="_blank">{{ file.filename }}</a></td>
-                        <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                        <td>
-                            <form action="{{ url_for('delete_file', file_id=file.id) }}" method="POST" style="display:inline;">
-                                <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar este archivo?')" class="btn-delete">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No hay archivos subidos en la base de datos.</p>
-    {% endif %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <h3>Archivos Existentes</h3>
+        </div>
+        <div class="card-body">
+            {% if files %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Ícono</th>
+                                <th>Título</th>
+                                <th>Descripción</th>
+                                <th>Nombre de Archivo</th>
+                                <th>Fecha de Subida</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files %}
+                                <tr>
+                                    <td><i class="bi {{ get_file_icon(file.filename) }} fs-5"></i></td> {# Aquí usamos la función y el ícono #}
+                                    <td>{{ file.title }}</td>
+                                    <td>{{ file.description }}</td>
+                                    <td>
+                                        <a href="{{ url_for('static', filename='../uploads/' + file.filename) }}" target="_blank">
+                                            {{ file.filename }}
+                                        </a>
+                                    </td>
+                                    <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        <form action="{{ url_for('delete_file', file_id=file.id) }}" method="POST" style="display:inline;">
+                                            <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar este archivo?')" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash-fill"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    No hay archivos subidos en la base de datos.
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

@@ -5,14 +5,28 @@
 {% block dc_description %}Página de inicio de sesión para el panel de administración.{% endblock %}
 
 {% block content %}
-    <h2>Login de Administración</h2>
-    <form method="POST" class="login-form">
-        <label for="username">Usuario:</label>
-        <input type="text" id="username" name="username" required><br>
-
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required><br>
-
-        <button type="submit">Iniciar Sesión</button>
-    </form>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white text-center">
+                    <h3>Login de Administración</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Usuario:</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
