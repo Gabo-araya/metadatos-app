@@ -134,26 +134,6 @@ podman inspect metadatos-app
 
 ## 🔍 **Verificación y Troubleshooting**
 
-### **Para PythonAnywhere:**
-
-1. **Si la aplicación no carga**:
-   - Revisar error log en Web tab
-   - Verificar que el entorno virtual está correcto
-   - Comprobar que el archivo WSGI es correcto
-
-2. **Si hay errores de importación**:
-   ```bash
-   workon metadatos_env
-   pip list | grep Flask
-   ```
-
-3. **Si la base de datos no funciona**:
-   ```bash
-   cd metadatos_project
-   python -c "from app import app, db; app.app_context().push(); db.create_all()"
-   ```
-
-### **Para Docker/Podman:**
 
 1. **Si el contenedor no inicia**:
    ```bash
@@ -169,5 +149,4 @@ podman inspect metadatos-app
    ```bash
    podman port metadatos-app
    ```
-
 ---

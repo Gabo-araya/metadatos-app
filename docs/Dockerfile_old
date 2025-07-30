@@ -1,0 +1,54 @@
+# Metadatos App - Dockerfile
+FROM python:3.10-slim
+
+# Metadata
+LABEL maintainer="Metadatos App Team"
+LABEL description="Metadatos App - Flask application with Dublin Core metadata support"
+LABEL version="2.0"
+
+# Variables de entorno
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    FLASK_APP=app.py \
+    FLASK_ENV=production
+
+# Crear usuario no-root por seguridad
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    gcc \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear directorio de trabajo
+WORKDIR /app
+
+# Copiar requirements e instalar dependencias Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir gunicorn
+
+# Copiar código de la aplicación
+COPY . .
+
+# Crear directorios necesarios y dar permisos ANTES de cambiar de usuario
+RUN mkdir -p uploads logs data static/uploads && \
+    chmod 755 uploads logs data static/uploads && \
+    touch logs/app.log && \
+    chmod 666 logs/app.log && \
+    chown -R appuser:appuser /app
+
+# Cambiar a usuario no-root
+USER appuser
+
+# Exponer puerto
+EXPOSE 5000
+
+# Comando de salud
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+# Comando por defecto
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "wsgi:application"]

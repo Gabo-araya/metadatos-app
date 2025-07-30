@@ -5,7 +5,7 @@ import os
 db = SQLAlchemy()
 
 class File(db.Model):
-    '''Modelo para archivos subidos'''
+    """Modelo para archivos subidos"""
 
     __tablename__ = 'files'
 
@@ -31,45 +31,45 @@ class File(db.Model):
 
     @property
     def file_extension(self):
-        '''Obtiene la extensión del archivo'''
+        """Obtiene la extensión del archivo"""
         if '.' in self.filename:
             return self.filename.rsplit('.', 1)[1].lower()
         return ''
 
     @property
     def is_image(self):
-        '''Verifica si el archivo es una imagen'''
+        """Verifica si el archivo es una imagen"""
         image_extensions = {'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'}
         return self.file_extension in image_extensions
 
     @property
     def is_document(self):
-        '''Verifica si el archivo es un documento'''
+        """Verifica si el archivo es un documento"""
         doc_extensions = {'pdf', 'doc', 'docx', 'txt', 'rtf'}
         return self.file_extension in doc_extensions
 
     @property
     def is_media(self):
-        '''Verifica si el archivo es multimedia'''
+        """Verifica si el archivo es multimedia"""
         media_extensions = {'mp3', 'wav', 'ogg', 'mp4', 'avi', 'mkv', 'mov'}
         return self.file_extension in media_extensions
 
     @property
     def formatted_size(self):
-        '''Retorna el tamaño formateado'''
+        """Retorna el tamaño formateado"""
         if self.file_size < 1:
             return f"{int(self.file_size * 1024)} KB"
         return f"{self.file_size:.2f} MB"
 
     @property
     def short_description(self):
-        '''Retorna una descripción truncada para vistas de lista'''
+        """Retorna una descripción truncada para vistas de lista"""
         if len(self.description) <= 100:
             return self.description
         return self.description[:100] + "..."
 
     def to_dict(self):
-        '''Convierte el objeto a diccionario para APIs'''
+        """Convierte el objeto a diccionario para APIs"""
         return {
             'id': self.id,
             'title': self.title,
@@ -85,7 +85,7 @@ class File(db.Model):
 
     @staticmethod
     def search(query):
-        '''Busca archivos por título o descripción'''
+        """Busca archivos por título o descripción"""
         return File.query.filter(
             db.or_(
                 File.title.contains(query),
@@ -96,7 +96,7 @@ class File(db.Model):
 
     @classmethod
     def get_stats(cls):
-        '''Obtiene estadísticas de archivos'''
+        """Obtiene estadísticas de archivos"""
         total_files = cls.query.count()
         total_size = db.session.query(db.func.sum(cls.file_size)).scalar() or 0
 
@@ -119,7 +119,7 @@ class File(db.Model):
         }
 
 class ActivityLog(db.Model):
-    '''Modelo para registrar actividades de administración'''
+    """Modelo para registrar actividades de administración"""
 
     __tablename__ = 'activity_logs'
 
@@ -140,7 +140,7 @@ class ActivityLog(db.Model):
 
     @classmethod
     def log_activity(cls, action, description, username, ip_address=None, user_agent=None, file_id=None):
-        '''Registra una actividad'''
+        """Registra una actividad"""
         log = cls(
             action=action,
             description=description,
@@ -157,17 +157,54 @@ class ActivityLog(db.Model):
             print(f"Error logging activity: {e}")
 
 def init_db(app):
-    '''Inicializa la base de datos'''
+    """Inicializa la base de datos con manejo mejorado de errores"""
     with app.app_context():
-        db.create_all()
-
-        # Crear índices adicionales si es necesario
         try:
-            # Índice compuesto para búsquedas
-            db.engine.execute(
-                'CREATE INDEX IF NOT EXISTS idx_file_search ON files(title, description)'
-            )
-        except Exception as e:
-            print(f"Warning: Could not create additional indexes: {e}")
+            # Verificar que el directorio de la base de datos existe
+            db_url = app.config.get('SQLALCHEMY_DATABASE_URI', '')
+            if db_url.startswith('sqlite:///'):
+                db_path = db_url.replace('sqlite:///', '')
+                if db_path.startswith('/'):
+                    # Ruta absoluta
+                    db_dir = os.path.dirname(db_path)
+                else:
+                    # Ruta relativa
+                    db_dir = os.path.dirname(os.path.abspath(db_path))
 
-        print("Base de datos inicializada correctamente")
+                # Crear directorio si no existe
+                if not os.path.exists(db_dir):
+                    try:
+                        os.makedirs(db_dir, exist_ok=True)
+                        os.chmod(db_dir, 0o777)  # Permisos completos para Docker
+                        print(f"✅ Directorio de BD creado: {db_dir}")
+                    except Exception as e:
+                        print(f"⚠️ Error creando directorio de BD {db_dir}: {e}")
+                        raise
+
+                # Verificar permisos del directorio
+                if not os.access(db_dir, os.W_OK):
+                    print(f"⚠️ Sin permisos de escritura en {db_dir}")
+                    try:
+                        os.chmod(db_dir, 0o777)
+                        print(f"✅ Permisos corregidos para {db_dir}")
+                    except Exception as e:
+                        print(f"❌ No se pudieron corregir permisos: {e}")
+                        raise
+
+            # Crear todas las tablas
+            db.create_all()
+            print("✅ Base de datos inicializada correctamente")
+
+            # Verificar que la BD funciona
+            try:
+                db.session.execute(db.text('SELECT 1'))
+                db.session.commit()
+                print("✅ Conexión a base de datos verificada")
+            except Exception as e:
+                print(f"⚠️ Error verificando conexión a BD: {e}")
+                raise
+
+        except Exception as e:
+            print(f"❌ Error inicializando base de datos: {e}")
+            print(f"❌ DATABASE_URI: {app.config.get('SQLALCHEMY_DATABASE_URI')}")
+            raise

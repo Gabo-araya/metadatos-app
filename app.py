@@ -370,5 +370,17 @@ def view_file(file_id):
         flash('Error al cargar el archivo', 'danger')
         return redirect(url_for('index'))
 
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint for Docker"""
+    try:
+        # Verificar base de datos
+        db.session.execute(db.text('SELECT 1'))
+        return {'status': 'healthy', 'timestamp': datetime.utcnow().isoformat()}, 200
+    except Exception as e:
+        return {'status': 'unhealthy', 'error': str(e)}, 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)

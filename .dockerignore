@@ -1,0 +1,64 @@
+# Metadatos App - .dockerignore
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+docs/
+*.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv/
+
+# Local development
+.env.local
+.env.development
+instance/
+uploads/
+logs/
+*.log
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+.coverage
+.pytest_cache/
+.tox/
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Deployment specific
+docker-compose.override.yml
+Dockerfile.dev
+.dockerignore.local
