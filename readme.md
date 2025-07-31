@@ -1,8 +1,8 @@
-# 📁 Metadatos App v2.0
+# 📁 Metadatos App
 
-Una aplicación web moderna y robusta desarrollada con Flask para la gestión integral de archivos digitales con soporte completo para metadatos Dublin Core. Incluye un panel de administración avanzado, sistema de búsqueda, y una interfaz pública responsive.
+Una aplicación web desarrollada con Flask para la gestión integral de archivos digitales con soporte completo para metadatos Dublin Core.
+Incluye un panel de administración, sistema de búsqueda, y una interfaz pública responsive.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-brightgreen.svg)
 ![Flask](https://img.shields.io/badge/flask-3.0+-red.svg)
 ![Bootstrap](https://img.shields.io/badge/bootstrap-5.3-purple.svg)
@@ -158,6 +158,446 @@ La aplicación estará disponible en: **http://127.0.0.1:5000**
 
 ---
 
+## 🌐 **Despliegue en PythonAnywhere**
+
+### **Prerrequisitos**
+- ✅ Cuenta en PythonAnywhere con usuario `metadatos`
+- ✅ URL disponible: `http://metadatos.pythonanywhere.com/`
+- ✅ Código del proyecto en GitHub
+
+### **Paso 1: Preparar el Repositorio**
+
+```bash
+# En tu máquina local, asegurar que el código esté en GitHub
+git add .
+git commit -m "Ready for PythonAnywhere deployment"
+git push origin main
+```
+
+### **Paso 2: Configurar en PythonAnywhere**
+
+1. **Iniciar sesión** en [pythonanywhere.com](https://www.pythonanywhere.com) con usuario `metadatos`
+2. **Abrir "Bash" console** desde el dashboard
+3. **Clonar el repositorio**:
+
+```bash
+# Verificar ubicación actual
+pwd  # Debería mostrar: /home/metadatos
+
+# Clonar el repositorio
+git clone https://github.com/Gabo-araya/metadatos-app.git metadatos_app
+cd metadatos_app
+```
+
+### **Paso 3: Configurar Entorno Virtual**
+
+```bash
+# Crear entorno virtual con Python 3.10
+mkvirtualenv --python=/usr/bin/python3.10 env
+
+# Si no está activo, activarlo:
+workon env
+
+# Instalar dependencias
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### **Paso 4: Configurar Variables de Entorno**
+
+```bash
+# Crear archivo .env
+nano .env
+```
+
+**Contenido del archivo .env**:
+```env
+# Configuración básica (CAMBIAR ESTOS VALORES)
+SECRET_KEY=tu-clave-secreta-super-fuerte-para-produccion-cambiar-esto
+FLASK_ENV=production
+FLASK_DEBUG=False
+
+# Base de datos
+DATABASE_URL=sqlite:///metadatos.db
+
+# Credenciales admin (CAMBIAR ESTOS VALORES)
+ADMIN_USERNAME=admin_metadatos
+ADMIN_PASSWORD=Password_Super_Segura_2024!
+
+# Configuración de archivos
+UPLOAD_FOLDER=uploads
+MAX_CONTENT_LENGTH=16777216
+
+# URL base
+BASE_URL=http://metadatos.pythonanywhere.com
+
+# Metadatos Dublin Core
+DC_CREATOR=Metadatos App Team
+DC_PUBLISHER=Metadatos App
+DC_RIGHTS=© 2024 Metadatos App. Todos los derechos reservados.
+DC_LANGUAGE=es
+```
+
+**Guardar**: `Ctrl + X`, `Y`, `Enter`
+
+### **Paso 5: Inicializar Base de Datos**
+
+```bash
+# Crear directorios necesarios
+mkdir -p uploads logs
+chmod 755 uploads logs
+
+# Inicializar base de datos
+python -c "from app import app, db; app.app_context().push(); db.create_all(); print('✅ Base de datos inicializada')"
+```
+
+### **Paso 6: Configurar Web App**
+
+1. **Ir a la pestaña "Web"** en el dashboard
+2. **Click "Add a new web app"**
+3. **Seleccionar dominio**: `metadatos.pythonanywhere.com`
+4. **Seleccionar "Manual configuration"**
+5. **Seleccionar "Python 3.10"**
+
+### **Paso 7: Configurar WSGI**
+
+1. **En la configuración Web**, click en **"WSGI configuration file"**
+2. **Reemplazar TODO el contenido** con:
+
+```python
+import sys
+import os
+from pathlib import Path
+
+# Configurar la ruta del proyecto
+project_home = '/home/metadatos/metadatos_app'
+if project_home not in sys.path:
+    sys.path = [project_home] + sys.path
+
+# Cargar variables de entorno
+from dotenv import load_dotenv
+env_path = Path(project_home) / '.env'
+if env_path.exists():
+    load_dotenv(env_path)
+
+# Importar la aplicación
+os.chdir(project_home)
+from wsgi import application
+```
+
+### **Paso 8: Configurar Paths**
+
+1. **Virtualenv**: `/home/metadatos/.virtualenvs/env`
+2. **Source code**: `/home/metadatos/metadatos_app`
+3. **Working directory**: `/home/metadatos/metadatos_app`
+
+### **Paso 9: Configurar Archivos Estáticos**
+
+| URL | Directory |
+|-----|-----------|
+| `/static/` | `/home/metadatos/metadatos_app/static/` |
+| `/uploads/` | `/home/metadatos/metadatos_app/uploads/` |
+
+### **Paso 10: Reload y Probar**
+
+1. **Click "Reload"** (botón verde)
+2. **Visitar**: `http://metadatos.pythonanywhere.com/`
+3. **Probar login** en `/login` con las credenciales del .env
+4. **Subir archivo de prueba** para verificar funcionalidad
+
+---
+
+## 🐳 **Containerización con Podman**
+
+### **Prerrequisitos**
+- Podman instalado en tu sistema
+- Proyecto Metadatos App funcionando localmente
+
+### **Paso 1: Instalar Podman**
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install podman
+```
+
+**macOS:**
+```bash
+brew install podman
+```
+
+**Fedora/CentOS:**
+```bash
+sudo dnf install podman
+```
+
+### **Paso 2: Preparar Archivos de Container**
+
+#### **Crear Dockerfile:**
+```dockerfile
+FROM python:3.10-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    FLASK_APP=app.py \
+    FLASK_ENV=production
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    gcc \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Instalar dependencias Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir gunicorn
+
+# Copiar código de la aplicación
+COPY . .
+
+# Crear directorios con permisos
+RUN mkdir -p uploads logs data static/uploads && \
+    chmod -R 777 uploads logs data static && \
+    touch logs/app.log && \
+    chmod 666 logs/app.log
+
+EXPOSE 5000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "wsgi:application"]
+```
+
+#### **Crear .dockerignore:**
+```dockerignore
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+venv/
+env/
+
+# Local development
+.env.local
+uploads/
+logs/
+*.log
+*.db
+*.sqlite*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+docs/
+```
+
+#### **Crear docker-compose.yml:**
+```yaml
+version: '3.8'
+
+services:
+  metadatos-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: metadatos-app
+    restart: unless-stopped
+
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
+      - FLASK_ENV=production
+      - FLASK_DEBUG=False
+      - DATABASE_URL=sqlite:///data/metadatos.db
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-change-this-password}
+      - UPLOAD_FOLDER=uploads
+      - MAX_CONTENT_LENGTH=16777216
+      - LOG_LEVEL=INFO
+      - BASE_URL=http://localhost:5000
+
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - metadatos_data:/app/data
+      - metadatos_uploads:/app/uploads
+      - metadatos_logs:/app/logs
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  metadatos_data:
+  metadatos_uploads:
+  metadatos_logs:
+```
+
+### **Paso 3: Agregar Health Check**
+
+Agregar esta ruta al archivo `app.py`:
+
+```python
+@app.route('/health')
+def health_check():
+    """Health check endpoint for Docker"""
+    try:
+        # Verificar base de datos
+        db.session.execute(db.text('SELECT 1'))
+        return {'status': 'healthy', 'timestamp': datetime.utcnow().isoformat()}, 200
+    except Exception as e:
+        return {'status': 'unhealthy', 'error': str(e)}, 500
+```
+
+### **Paso 4: Crear Variables de Entorno para Container**
+
+```bash
+# Crear archivo .env.docker
+cat > .env.docker << 'EOF'
+SECRET_KEY=docker-secret-key-change-in-production-2024
+ADMIN_USERNAME=admin_docker
+ADMIN_PASSWORD=DockerPassword2024!
+DATABASE_URL=sqlite:///data/metadatos.db
+UPLOAD_FOLDER=uploads
+MAX_CONTENT_LENGTH=16777216
+LOG_LEVEL=INFO
+LOG_FILE=logs/app.log
+BASE_URL=http://localhost:5000
+DC_CREATOR=Metadatos App Docker
+DC_PUBLISHER=Metadatos App
+DC_RIGHTS=© 2024 Metadatos App Docker. Todos los derechos reservados.
+DC_LANGUAGE=es
+FLASK_ENV=production
+FLASK_DEBUG=False
+EOF
+```
+
+### **Paso 5: Construir y Ejecutar con Podman**
+
+#### **Opción A: Contenedor Simple**
+
+```bash
+# Construir la imagen
+podman build -t metadatos-app:latest .
+
+# Verificar que se creó
+podman images
+
+# Ejecutar el contenedor
+podman run -d \
+  --name metadatos-app \
+  -p 5000:5000 \
+  --env-file .env.docker \
+  -v metadatos_data:/app/data \
+  -v metadatos_uploads:/app/uploads \
+  -v metadatos_logs:/app/logs \
+  metadatos-app:latest
+
+# Verificar que está corriendo
+podman ps
+
+# Ver logs
+podman logs metadatos-app
+```
+
+#### **Opción B: Docker Compose con Podman**
+
+```bash
+# Instalar podman-compose (si no lo tienes)
+pip install podman-compose
+
+# Ejecutar con compose
+podman-compose up -d
+
+# Ver estado
+podman-compose ps
+
+# Ver logs
+podman-compose logs -f metadatos-app
+
+# Parar servicios
+podman-compose down
+```
+
+### **Paso 6: Verificar la Aplicación**
+
+1. **Abrir navegador** en: `http://localhost:5000`
+2. **Probar login** con credenciales del .env.docker:
+   - Usuario: `admin_docker`
+   - Contraseña: `DockerPassword2024!`
+3. **Subir archivo de prueba** para verificar persistencia
+
+### **Paso 7: Comandos Útiles de Podman**
+
+```bash
+# Ver contenedores corriendo
+podman ps
+
+# Ver logs en tiempo real
+podman logs -f metadatos-app
+
+# Entrar al contenedor
+podman exec -it metadatos-app /bin/bash
+
+# Ver uso de recursos
+podman stats metadatos-app
+
+# Parar contenedor
+podman stop metadatos-app
+
+# Reiniciar contenedor
+podman restart metadatos-app
+
+# Eliminar contenedor
+podman rm metadatos-app
+
+# Eliminar imagen
+podman rmi metadatos-app:latest
+```
+
+### **Paso 8: Actualizar la Aplicación**
+
+```bash
+# Para actualizar después de cambios en el código:
+
+# Parar y eliminar contenedor
+podman stop metadatos-app && podman rm metadatos-app
+
+# Reconstruir imagen
+podman build -t metadatos-app:latest .
+
+# Ejecutar nuevo contenedor
+podman run -d \
+  --name metadatos-app \
+  -p 5000:5000 \
+  --env-file .env.docker \
+  -v metadatos_data:/app/data \
+  -v metadatos_uploads:/app/uploads \
+  -v metadatos_logs:/app/logs \
+  metadatos-app:latest
+```
+
+---
+
 ## 🔧 **Configuración Avanzada**
 
 ### **Variables de Entorno Disponibles**
@@ -195,113 +635,6 @@ La aplicación estará disponible en: **http://127.0.0.1:5000**
 #### 💾 **Datos**
 - JSON, XML
 - Archivos de configuración
-
----
-
-## 🌐 **Despliegue en Producción**
-
-### **PythonAnywhere (Recomendado para principiantes)**
-
-1. **Preparar el código:**
-```bash
-git push origin main  # Asegurar que el código esté en GitHub
-```
-
-2. **En PythonAnywhere:**
-```bash
-# Clonar repositorio
-git clone https://github.com/Gabo-araya/metadatos-app.git metadatos_app
-
-# Crear entorno virtual
-mkvirtualenv --python=/usr/bin/python3.10 metadatos_env
-
-# Instalar dependencias
-cd metadatos_app
-pip install -r requirements.txt
-```
-
-3. **Configurar aplicación web:**
-   - Ve a la pestaña "Web"
-   - Crea nueva aplicación Flask
-   - Configura el archivo WSGI: `/var/www/tu_usuario_pythonanywhere_com_wsgi.py`
-
-```python
-import sys
-project_home = '/home/tu_usuario/metadatos_app'
-if project_home not in sys.path:
-    sys.path.insert(0, project_home)
-
-from wsgi import application
-```
-
-4. **Configurar variables de entorno en la pestaña "Files" → `.env`**
-
-### **VPS con Nginx + Gunicorn**
-
-1. **Instalar dependencias del sistema:**
-```bash
-sudo apt update
-sudo apt install python3-pip python3-venv nginx supervisor
-```
-
-2. **Configurar aplicación:**
-```bash
-cd /var/www/
-sudo git clone https://github.com/Gabo-araya/metadatos-app.git metadatos_app
-cd metadatos_app
-sudo python3 -m venv venv
-sudo venv/bin/pip install -r requirements.txt
-sudo venv/bin/pip install gunicorn
-```
-
-3. **Configurar Gunicorn (`/etc/supervisor/conf.d/metadatos.conf`):**
-```ini
-[program:metadatos]
-command=/var/www/metadatos_app/venv/bin/gunicorn --workers 3 --bind unix:/var/www/metadatos_app/metadatos.sock -m 007 wsgi:application
-directory=/var/www/metadatos_app
-user=www-data
-autostart=true
-autorestart=true
-redirect_stderr=true
-```
-
-4. **Configurar Nginx (`/etc/nginx/sites-available/metadatos`):**
-```nginx
-server {
-    listen 80;
-    server_name tu-dominio.com;
-
-    location / {
-        include proxy_params;
-        proxy_pass http://unix:/var/www/metadatos_app/metadatos.sock;
-    }
-
-    location /static {
-        alias /var/www/metadatos_app/static;
-    }
-
-    location /uploads {
-        alias /var/www/metadatos_app/uploads;
-    }
-}
-```
-
-### **Docker (Avanzado)**
-
-```dockerfile
-FROM python:3.10-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 5000
-
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:application"]
-```
 
 ---
 
@@ -344,6 +677,71 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:application"]
 
 ---
 
+## 🔍 **Solución de Problemas**
+
+### **Problemas Comunes**
+
+#### **Error: "Secret key not configured"**
+```bash
+# Verificar que SECRET_KEY esté configurada
+echo $SECRET_KEY
+
+# Si está vacía, configurarla:
+export SECRET_KEY="tu-clave-secreta-aqui"
+```
+
+#### **Error: "Permission denied" en uploads**
+```bash
+# Dar permisos a la carpeta uploads
+chmod 755 uploads/
+chown -R www-data:www-data uploads/  # En producción
+```
+
+#### **Error: "Database not found"**
+```bash
+# Inicializar base de datos
+python -c "from app import app, db; app.app_context().push(); db.create_all()"
+```
+
+#### **Archivos no se muestran**
+- Verificar permisos de la carpeta `uploads/`
+- Confirmar que la ruta en `.env` sea correcta
+- Revisar logs para errores específicos
+
+#### **Problemas con Podman**
+```bash
+# Ver logs detallados del contenedor
+podman logs metadatos-app
+
+# Verificar puertos
+podman port metadatos-app
+
+# Entrar al contenedor para debug
+podman exec -it metadatos-app /bin/bash
+
+# Verificar volúmenes
+podman inspect metadatos-app
+```
+
+### **Debugging**
+
+```bash
+# Activar modo debug (solo desarrollo)
+export FLASK_DEBUG=True
+flask run
+
+# Ver logs en tiempo real
+tail -f app.log
+
+# Verificar configuración
+python -c "from app import app; print(app.config)"
+
+# Para containers
+podman logs -f metadatos-app
+```
+
+---
+
 ## 📚 **Recursos Adicionales**
 
 ### **Documentación**
@@ -351,6 +749,8 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:application"]
 - [Flask Documentation](https://flask.palletsprojects.com/)
 - [Bootstrap 5 Documentation](https://getbootstrap.com/docs/5.3/)
 - [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
+- [Podman Documentation](https://podman.io/docs)
+- [PythonAnywhere Help](https://help.pythonanywhere.com/)
 
 ---
 
@@ -368,6 +768,8 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:application"]
 - **Bootstrap Team** - Por los componentes UI
 - **Dublin Core Initiative** - Por los estándares de metadatos
 - **Font Awesome & Bootstrap Icons** - Por la iconografía
+- **PythonAnywhere** - Por la plataforma de hosting
+- **Podman Community** - Por la tecnología de containers
 - **Comunidad Open Source** - Por las contribuciones y feedback
 
 ---
