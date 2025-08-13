@@ -6,7 +6,7 @@ services:
   metadatos-app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.optimized
     container_name: metadatos-app
     restart: unless-stopped
 

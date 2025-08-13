@@ -140,21 +140,43 @@ class ActivityLog(db.Model):
 
     @classmethod
     def log_activity(cls, action, description, username, ip_address=None, user_agent=None, file_id=None):
-        """Registra una actividad"""
-        log = cls(
-            action=action,
-            description=description,
-            username=username,
-            ip_address=ip_address,
-            user_agent=user_agent,
-            file_id=file_id
-        )
-        db.session.add(log)
+        """Registra una actividad con manejo seguro de transacciones"""
         try:
-            db.session.commit()
+            # Usar transacción explícita para mejor aislamiento
+            with db.session.begin():
+                log = cls(
+                    action=action,
+                    description=description,
+                    username=username,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    file_id=file_id
+                )
+                db.session.add(log)
+                # Commit automático al salir del bloque with
         except Exception as e:
-            db.session.rollback()
-            print(f"Error logging activity: {e}")
+            # Import here to avoid circular imports
+            import uuid
+            error_id = str(uuid.uuid4())[:8]
+            print(f"Error ID {error_id} logging activity: {type(e).__name__}")
+            # También log en el sistema de logging si está disponible
+            try:
+                from flask import current_app
+                current_app.logger.error(f'Error ID {error_id} logging activity: {type(e).__name__}', exc_info=True)
+            except (ImportError, RuntimeError):
+                pass  # Flask context no disponible
+            # No re-raise para evitar interrumpir el flujo principal
+            return False
+        return True
+
+def check_db_connection():
+    """Verifica conexión a base de datos de forma segura"""
+    try:
+        # Usar ORM en lugar de SQL raw
+        result = db.session.query(db.literal(1)).scalar()
+        return True
+    except Exception:
+        return False
 
 def init_db(app):
     """Inicializa la base de datos con manejo mejorado de errores"""
@@ -178,7 +200,7 @@ def init_db(app):
                         os.chmod(db_dir, 0o777)  # Permisos completos para Docker
                         print(f"✅ Directorio de BD creado: {db_dir}")
                     except Exception as e:
-                        print(f"⚠️ Error creando directorio de BD {db_dir}: {e}")
+                        print(f"⚠️ Error creando directorio de BD {db_dir}: {type(e).__name__}")
                         raise
 
                 # Verificar permisos del directorio
@@ -188,23 +210,32 @@ def init_db(app):
                         os.chmod(db_dir, 0o777)
                         print(f"✅ Permisos corregidos para {db_dir}")
                     except Exception as e:
-                        print(f"❌ No se pudieron corregir permisos: {e}")
+                        print(f"❌ No se pudieron corregir permisos: {type(e).__name__}")
                         raise
 
-            # Crear todas las tablas
-            db.create_all()
-            print("✅ Base de datos inicializada correctamente")
-
-            # Verificar que la BD funciona
+            # Crear todas las tablas solo si no existen
             try:
-                db.session.execute(db.text('SELECT 1'))
-                db.session.commit()
-                print("✅ Conexión a base de datos verificada")
+                db.create_all()
+                print("✅ Base de datos inicializada correctamente")
             except Exception as e:
-                print(f"⚠️ Error verificando conexión a BD: {e}")
+                if "already exists" in str(e).lower():
+                    print("ℹ️ Tablas de BD ya existen, continuando...")
+                else:
+                    print(f"⚠️ Error creando tablas: {type(e).__name__}")
+                    raise
+
+            # Verificar que la BD funciona usando método seguro
+            try:
+                if check_db_connection():
+                    print("✅ Conexión a base de datos verificada")
+                else:
+                    print("⚠️ Conexión a base de datos falló")
+                    raise Exception("Database connection test failed")
+            except Exception as e:
+                print(f"⚠️ Error verificando conexión a BD: {type(e).__name__}")
                 raise
 
         except Exception as e:
-            print(f"❌ Error inicializando base de datos: {e}")
+            print(f"❌ Error inicializando base de datos: {type(e).__name__}")
             print(f"❌ DATABASE_URI: {app.config.get('SQLALCHEMY_DATABASE_URI')}")
             raise
